@@ -1,0 +1,245 @@
+
+body {
+    overflow-x: hidden;
+}
+
+
+/* Registration Form Styles */
+.registration-container {
+    background: linear-gradient(45deg, rgba(56, 182, 255, 0.1), rgba(140, 82, 255, 0.1));
+    padding: 3rem 0;
+    min-height: 100vh;
+}
+
+.registration-form {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.form-title {
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.form-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 3px;
+    background-image: linear-gradient(-45deg, #020024, #106060, #2fc6c6);
+}
+
+.form-outline {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    color: #666;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #106060;
+    box-shadow: 0 0 0 0.2rem rgba(140, 82, 255, 0.25);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group .form-control {
+    border-right: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group .btn {
+    border: 2px solid #e1e1e1;
+    border-left: none;
+    background: white;
+    border-top-right-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+}
+
+.input-group .btn:hover {
+    background: #f8f9fa;
+}
+
+.input-group .btn:focus {
+    box-shadow: none;
+}
+
+/* File Input Styling */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.file-input-wrapper input[type="file"] {
+    cursor: pointer;
+}
+
+.file-input-wrapper:hover .form-control {
+    border-color: #8c52ff;
+}
+
+/* Checkbox Styling */
+.form-check {
+    margin: 1.5rem 0;
+}
+
+.form-check-input {
+    width: 1.2em;
+    height: 1.2em;
+    margin-top: 0.15em;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #106060;
+    border-color: #106060;
+}
+
+.form-check-label {
+    cursor: pointer;
+    padding-left: 0.5rem;
+}
+
+/* Submit Button */
+.register-btn {
+    background-image: linear-gradient(-45deg, #020024, #106060, #2fc6c6);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 82, 255, 0.3);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+/* Login Link */
+.login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.login-link a {
+    color: #106060;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #38b6ff;
+}
+
+/* Invalid Feedback */
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    height: 4px;
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.strength-weak {
+    background: #dc3545;
+    width: 30%;
+}
+
+.strength-medium {
+    background: #ffc107;
+    width: 60%;
+}
+
+.strength-strong {
+    background: #28a745;
+    width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .registration-container {
+        padding: 2rem 0;
+    }
+
+    .registration-form {
+        padding: 1.5rem;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animation for Form Elements */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-outline {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.form-outline:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.form-outline:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.form-outline:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.form-outline:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.form-outline:nth-child(5) {
+    animation-delay: 0.5s;
+}

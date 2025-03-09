@@ -1,0 +1,107 @@
+.contact-container {
+    padding: 4rem 0;
+    background: linear-gradient(45deg, rgba(56, 182, 255, 0.1), rgba(140, 82, 255, 0.1));
+}
+
+.contact-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.contact-info {
+    background-image: linear-gradient(-45deg, #020024, #106060, #2fc6c6);
+    color: white;
+    padding: 3rem 2rem;
+}
+
+.contact-info h3 {
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.info-item i {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.contact-form {
+    padding: 3rem 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #106060;
+    box-shadow: 0 0 0 3px rgba(140, 82, 255, 0.1);
+}
+
+.social-links {
+    margin-top: 2rem;
+}
+
+.social-links a {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.submit-btn {
+    background-image: linear-gradient(-45deg, #020024, #106060, #2fc6c6);
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 82, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .contact-info {
+        padding: 2rem;
+    }
+
+    .contact-form {
+        padding: 2rem;
+    }
+}

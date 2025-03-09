@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="LiveMusic Store - Your premier destination for musical instruments and accessories">
+    <title>Contact Us - SoundVibe Store</title>
+    <link rel="shortcut icon" href="images/soundVibe3.png" type="image/x-icon">
+
+    <!-- CSS links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/contact.css">
+</head>
+<body>
+<div class="container-fluid p-0">
+    <!-- Main Navigation -->
+    <th:block th:insert="fragments/menu :: main-menu"></th:block>
+
+    <!-- Secondary Navigation -->
+    <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
+
+    <div class="contact-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="contact-card">
+                        <div class="row g-0">
+                            <div class="col-md-5">
+                                <div class="contact-info">
+                                    <h3>Get in Touch</h3>
+                                    <div class="info-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <div>
+                                            <h6 class="mb-0">Address</h6>
+                                            <p class="mb-0">123 Music Street, London, UK</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <div>
+                                            <h6 class="mb-0">Email</h6>
+                                            <p class="mb-0">info@soundvibestore.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="info-item">
+                                        <i class="fas fa-phone"></i>
+                                        <div>
+                                            <h6 class="mb-0">Phone</h6>
+                                            <p class="mb-0">+44 123 456 7890</p>
+                                        </div>
+                                    </div>
+                                    <div class="social-links">
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                        <a href="#"><i class="fab fa-instagram"></i></a>
+                                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="contact-form">
+                                    <h3 class="mb-4">Send us a Message</h3>
+                                    <form id="contactForm">
+                                        <div class="form-group">
+                                            <label class="form-label">Your Name</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Subject</label>
+                                            <input type="text" class="form-control" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Message</label>
+                                            <textarea class="form-control" rows="5" required></textarea>
+                                        </div>
+                                        <button type="submit" class="submit-btn">
+                                            Send Message
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gradient text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your premier destination for quality music albums.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Products</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
+                <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Form submission handling
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Add your form submission logic here
+        alert('Thank you for your message! We will get back to you soon.');
+        this.reset();
+    });
+</script>
+</body>
+
+</html>

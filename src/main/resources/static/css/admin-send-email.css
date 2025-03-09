@@ -1,0 +1,116 @@
+.message-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.user-select {
+    position: relative;
+}
+
+.user-select .form-control {
+    padding-left: 2.5rem;
+}
+
+.user-select i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #106060;
+}
+
+.message-type-selector {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.message-type {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.message-type.active {
+    border-color: #106060;
+    background: rgba(140, 82, 255, 0.05);
+}
+
+.message-type i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #106060;
+}
+
+.message-editor {
+    border: 2px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.message-editor:focus-within {
+    border-color: #106060;
+    box-shadow: 0 0 0 3px rgba(140, 82, 255, 0.1);
+}
+
+.attachment-preview {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.attachment-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.attachment-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-attachment {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: #dc3545;
+}
+
+.gradient-btn {
+    background-image: linear-gradient(-45deg,#020024, #106060,#2fc6c6);
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.gradient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(140, 82, 255, 0.2);
+}

@@ -1,0 +1,185 @@
+.profile-sidebar {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    height: 100%;
+}
+
+.profile-header {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.profile-content {
+    padding: 2rem 1.5rem;
+}
+
+.profile-image-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+}
+
+.profile-stats {
+    margin-top: 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 1.5rem;
+}
+
+.stat-item {
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    background: rgba(140, 82, 255, 0.05);
+}
+
+.stat-item h6 {
+    color: #666;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-item span {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #106060;
+}
+
+/* Main Content Styles */
+.profile-main {
+    padding: 1rem;
+}
+
+.welcome-banner {
+    /* background-image: linear-gradient(45deg, #38b6ff, #8c52ff); */
+    background-image: linear-gradient(-45deg,#020024, #106060,#2fc6c6);
+    border: none;
+}
+
+.welcome-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.action-card {
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.action-card .button {
+    height: 100%;
+    min-height: 60px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-image: linear-gradient(45deg, #38b6ff, #8c52ff);
+    border: none;
+    color: white;
+    border-radius: 10px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.action-card .button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(140, 82, 255, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .profile-sidebar {
+        margin-bottom: 2rem;
+    }
+
+    .profile-image-container {
+        width: 120px;
+        height: 120px;
+    }
+
+    .action-card {
+        margin-bottom: 1rem;
+    }
+
+    .welcome-banner {
+        text-align: center;
+    }
+
+    .welcome-logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1rem;
+    }
+}
+
+.orders-table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.table thead th {
+    border: none;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+.badge {
+    padding: 0.5em 1em;
+}
+
+.order-info h6 {
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.order-info p {
+    margin-bottom: 1rem;
+}
+
+.modal-lg {
+    max-width: 800px;
+}
+
+.order-summary {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.btn-group .btn {
+    border-radius: 4px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}

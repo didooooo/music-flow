@@ -1,0 +1,154 @@
+/* Album Details Page Styles */
+.album-details-container {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Album Image Styles */
+.album-image-card {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.album-image-card:hover {
+    transform: translateY(-5px);
+}
+
+.album-image-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.album-image-card:hover img {
+    transform: scale(1.05);
+}
+
+.album-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.album-image-card:hover .album-overlay {
+    opacity: 1;
+}
+
+.preview-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+}
+
+.album-image-card:hover .preview-btn {
+    transform: translateY(0);
+}
+
+/* Album Info Table Styles */
+.album-info-table {
+    padding: 1rem;
+}
+
+.album-info-table .table {
+    margin-bottom: 0;
+}
+
+.album-info-table th {
+    width: 30%;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.album-info-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.album-info-table tr:last-child td {
+    border-bottom: none;
+}
+
+.album-info-table .badge {
+    padding: 0.5em 1em;
+    font-weight: 500;
+}
+
+/* Button Styles */
+.btn-outline-secondary {
+    border-color: #dee2e6;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    color: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .album-details-container {
+        padding: 1rem;
+    }
+
+    .album-info-table {
+        margin-top: 2rem;
+    }
+
+    .album-info-table th {
+        width: 40%;
+    }
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+.star:hover,
+.star.active {
+    color: #ffd700;
+}
+
+.stars-container {
+    display: inline-block;
+}
+
+.star {
+    color: #ddd;
+    cursor: pointer;
+    padding: 0.2rem;
+    transition: all 0.2s ease;
+}
+
+.star.fas {
+    color: #ffd700;
+}
+
+.star:hover {
+    transform: scale(1.1);
+}
+
+.rating-value {
+    font-weight: bold;
+    color: #666;
+}

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="SoundVibe Store - Your premier destination for musical instruments and accessories">
+    <title>SoundVibe Store - Feel the Beat, Own the Music</title>
+    <link rel="shortcut icon" href="images/soundVibe3.png" type="image/x-icon">
+
+    <!-- CSS links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/products.css">
+</head>
+
+<body>
+<div class="container-fluid p-0">
+    <!-- Main Navigation -->
+    <th:block th:insert="fragments/menu :: main-menu"></th:block>
+
+    <!-- Secondary Navigation -->
+    <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
+
+    <!-- Products Section -->
+    <div class="row mx-0 mt-3" id="products">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3">
+            <div class="filter-section">
+                <h3 class="filter-title">Filters</h3>
+
+                <!-- Search Filter -->
+                <!-- <div class="filter-group">
+                    <label class="filter-label">Search</label>
+                    <div class="search-box">
+                        <input type="text" class="form-control" placeholder="Search albums...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div> -->
+
+                <!-- Media Type Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Media Type</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="cd">
+                        <label class="form-check-label" for="cd">CD</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="dvd">
+                        <label class="form-check-label" for="dvd">DVD</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="vinyl">
+                        <label class="form-check-label" for="vinyl">Vinyl</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="digital">
+                        <label class="form-check-label" for="digital">Digital Download</label>
+                    </div>
+                </div>
+
+                <!-- Genre Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Genre</label>
+                    <div class="genre-list">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="pop">
+                            <label class="form-check-label" for="pop">Pop</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rock">
+                            <label class="form-check-label" for="rock">Rock</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="jazz">
+                            <label class="form-check-label" for="jazz">Jazz</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="classical">
+                            <label class="form-check-label" for="classical">Classical</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="hiphop">
+                            <label class="form-check-label" for="hiphop">Hip Hop</label>
+                        </div>
+                        <!-- Show more genres button -->
+                        <button class="show-more-btn" id="showMoreGenres">
+                            Show More <i class="fas fa-chevron-down"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Artist Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Artist</label>
+                    <div class="search-box mb-2">
+                        <input type="text" class="form-control" placeholder="Search artists...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div class="artist-list">
+                        <!-- Popular artists will be shown here -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="artist1">
+                            <label class="form-check-label" for="artist1">Taylor Swift</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="artist2">
+                            <label class="form-check-label" for="artist2">Ed Sheeran</label>
+                        </div>
+                        <!-- More artists -->
+                    </div>
+                </div>
+
+                <!-- Record Label Filter -->
+                <div class="filter-group">
+                    <label class="filter-label">Record Label</label>
+                    <div class="search-box mb-2">
+                        <input type="text" class="form-control" placeholder="Search labels...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                    <div class="label-list">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="label1">
+                            <label class="form-check-label" for="label1">Universal Music</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="label2">
+                            <label class="form-check-label" for="label2">Sony Music</label>
+                        </div>
+                        <!-- More labels -->
+                    </div>
+                </div>
+
+                <!-- Price Range -->
+                <div class="filter-group">
+                    <label class="filter-label">Price Range</label>
+                    <div class="price-range">
+                        <input type="number" class="price-input" placeholder="Min">
+                        <span>-</span>
+                        <input type="number" class="price-input" placeholder="Max">
+                    </div>
+                </div>
+
+                <!-- Clear Filters Button -->
+                <button class="clear-filters-btn">
+                    <i class="fas fa-times"></i> Clear All Filters
+                </button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Sort and View Options -->
+            <div class="catalog-header">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="results-info">
+                        <h4 class="mb-0">All Albums</h4>
+                        <small class="text-muted">Showing 1-12 of 48 results</small>
+                    </div>
+                    <div class="catalog-options d-flex align-items-center">
+                        <div class="sort-by me-3">
+                            <select class="form-select">
+                                <option>Sort by: Featured</option>
+                                <option>Newest Arrivals</option>
+                                <option>Price: Low to High</option>
+                                <option>Price: High to Low</option>
+                                <option>Best Selling</option>
+                            </select>
+                        </div>
+                        <!-- <div class="view-options">
+                            <button class="btn btn-outline-secondary btn-sm me-2 active">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="row g-4">
+                <!-- Album Card -->
+                <div class="col-md-4 col-lg-4">
+                    <div class="album-card">
+                        <div class="album-image">
+                            <img src="images/sour.jpg" alt="SOUR - Olivia Rodrigo">
+                            <div class="album-badges">
+                                <span class="badge bg-danger">New</span>
+                                <span class="badge bg-primary">CD</span>
+                            </div>
+                            <div class="album-overlay">
+                                <div class="overlay-buttons">
+                                    <button class="overlay-btn preview-btn" title="Quick View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="overlay-btn wishlist-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="overlay-btn compare-btn" title="Compare">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="album-content">
+                            <div class="album-info">
+                                <h3 class="album-title">SOUR</h3>
+                                <p class="album-artist">Olivia Rodrigo</p>
+                                <div class="album-meta">
+                                    <div class="album-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <p class="album-price">
+                                        <span class="price-current">$19.99</span>
+                                        <span class="price-original">$24.99</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="album-footer">
+                                <button class="add-to-cart-btn">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-4">
+                    <div class="album-card">
+                        <div class="album-image">
+                            <img src="images/sour.jpg" alt="SOUR - Olivia Rodrigo">
+                            <div class="album-badges">
+                                <span class="badge bg-danger">New</span>
+                                <span class="badge bg-primary">CD</span>
+                            </div>
+                            <div class="album-overlay">
+                                <div class="overlay-buttons">
+                                    <button class="overlay-btn preview-btn" title="Quick View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="overlay-btn wishlist-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="overlay-btn compare-btn" title="Compare">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="album-content">
+                            <div class="album-info">
+                                <h3 class="album-title">SOUR</h3>
+                                <p class="album-artist">Olivia Rodrigo</p>
+                                <div class="album-meta">
+                                    <div class="album-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <p class="album-price">
+                                        <span class="price-current">$19.99</span>
+                                        <span class="price-original">$24.99</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="album-footer">
+                                <button class="add-to-cart-btn">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="album-card">
+                        <div class="album-image">
+                            <img src="images/sour.jpg" alt="SOUR - Olivia Rodrigo">
+                            <div class="album-badges">
+                                <span class="badge bg-danger">New</span>
+                                <span class="badge bg-primary">CD</span>
+                            </div>
+                            <div class="album-overlay">
+                                <div class="overlay-buttons">
+                                    <button class="overlay-btn preview-btn" title="Quick View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="overlay-btn wishlist-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="overlay-btn compare-btn" title="Compare">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="album-content">
+                            <div class="album-info">
+                                <h3 class="album-title">SOUR</h3>
+                                <p class="album-artist">Olivia Rodrigo</p>
+                                <div class="album-meta">
+                                    <div class="album-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <p class="album-price">
+                                        <span class="price-current">$19.99</span>
+                                        <span class="price-original">$24.99</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="album-footer">
+                                <button class="add-to-cart-btn">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-4">
+                    <div class="album-card">
+                        <div class="album-image">
+                            <img src="images/sour.jpg" alt="SOUR - Olivia Rodrigo">
+                            <div class="album-badges">
+                                <span class="badge bg-danger">New</span>
+                                <span class="badge bg-primary">CD</span>
+                            </div>
+                            <div class="album-overlay">
+                                <div class="overlay-buttons">
+                                    <button class="overlay-btn preview-btn" title="Quick View">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="overlay-btn wishlist-btn" title="Add to Wishlist">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="overlay-btn compare-btn" title="Compare">
+                                        <i class="fas fa-exchange-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="album-content">
+                            <div class="album-info">
+                                <h3 class="album-title">SOUR</h3>
+                                <p class="album-artist">Olivia Rodrigo</p>
+                                <div class="album-meta">
+                                    <div class="album-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                        <span class="rating-count">(128)</span>
+                                    </div>
+                                    <p class="album-price">
+                                        <span class="price-current">$19.99</span>
+                                        <span class="price-original">$24.99</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="album-footer">
+                                <button class="add-to-cart-btn">
+                                    <i class="fas fa-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                                <!-- <a href="#" class="btn btn-secondary btn-sm mx-0 my-2 p-2 w-100 "><i class="fas fa-eye"></i>
+                                    Details</a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Repeat similar cards for other albums -->
+            </div>
+
+            <!-- Pagination -->
+            <nav class="pagination-wrapper">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gradient text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your premier destination for quality music albums.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Products</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
+                <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
+</body>
+
+</html>

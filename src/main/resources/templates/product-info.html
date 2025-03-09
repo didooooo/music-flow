@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+          content="SoundVibe Store - Your premier destination for musical instruments and accessories">
+    <title>SoundVibe Store - Feel the Beat, Own the Music</title>
+    <link rel="shortcut icon" href="images/soundVibe3.png" type="image/x-icon">
+
+    <!-- CSS links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/product-info.css">
+</head>
+
+<body>
+<div class="container-fluid p-0">
+    <!-- Main Navigation -->
+    <th:block th:insert="fragments/menu :: main-menu"></th:block>
+
+    <!-- Secondary Navigation -->
+    <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
+    <!-- Products Section -->
+    <div class="row mx-0" id="products">
+        <div class="col-md-1 bg-light"></div>
+        <div class="col-md-10">
+            <div class="album-details-container my-5">
+                <div class="row">
+                    <!-- Album Image Section -->
+                    <div class="col-md-5">
+                        <div class="album-image-card">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2EvLEYyPFrgAwOtwNcgWDDbPfBhfoL6-vzQ&s"
+                                 class="img-fluid rounded shadow-lg" alt="Album Cover">
+                            <div class="album-overlay">
+                                <button class="btn btn-light preview-btn">
+                                    <i class="fas fa-play me-2"></i>Preview
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <iframe id="player" class="my-2"
+                                    src="https://open.spotify.com/embed/track/4il87YHqSV9UqbBkXM7z7m?utm_source=generator"
+                                    width="100%" height="100" frameborder="0" allowtransparency="true"
+                                    allow="encrypted-media">
+                            </iframe>
+                        </div>
+                        <div>
+                            <table id="first" class="table ">
+                                <thead>
+                                <th>
+                                    User: Olivia
+                                </th>
+                                <th>
+                                    <div class="rating-stars text-center mb-3">
+                                        <i class="fas fa-star fa-2x star"></i>
+                                        <i class="fas fa-star fa-2x star"></i>
+                                        <i class="fas fa-star fa-2x star"></i>
+                                        <i class="fas fa-star fa-2x star"></i>
+                                        <i class="fas fa-star fa-2x star"></i>
+                                    </div>
+                                </th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colspan="2">Comment </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table id="second" class="table">
+                                <thead>
+                                <th>
+                                    User: Olivia
+                                </th>
+                                <th>
+                                    <div class="rating-stars text-center mb-3">
+
+                                        <i class="fas fa-star fa-2x star" data-rating="1"></i>
+                                        <i class="fas fa-star fa-2x star" data-rating="2"></i>
+                                        <i class="fas fa-star fa-2x star" data-rating="3"></i>
+                                        <i class="fas fa-star fa-2x star" data-rating="4"></i>
+                                        <i class="fas fa-star fa-2x star" data-rating="5"></i>
+                                    </div>
+                                </th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td colspan="2">Comment </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Album Details Table Section -->
+                    <div class="col-md-7 d-flex align-items-center">
+                        <div class="album-info-table w-100">
+                            <table class="table table-hover">
+                                <tbody>
+                                <tr>
+                                    <th class="text-muted">Title:</th>
+                                    <td>One step forward three steps back</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Performer:</th>
+                                    <td>Olivia Rodrigo</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Genre:</th>
+                                    <td><span class="badge bg-secondary">Pop</span></td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Format:</th>
+                                    <td>CD</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Type:</th>
+                                    <td>Single</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Duration:</th>
+                                    <td>34 min</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Total tracks:</th>
+                                    <td>11</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Release date:</th>
+                                    <td>2023</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Music Company:</th>
+                                    <td>EMI</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="border-0 pt-4">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="./index.html" class="btn btn-outline-secondary">
+                                                <i class="fas fa-arrow-left me-2"></i>Go back
+                                            </a>
+
+                                            <button class="btn btn-warning" data-bs-toggle="modal"
+                                                    data-bs-target="#ratingModal">
+                                                <i class="fas fa-star me-2"></i>Rate Album
+                                            </button>
+
+                                            <button class="btn gradient text-light">
+                                                <i class="fas fa-cart-plus me-2"></i>Add to cart
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                        Illo obcaecati cum, quae quod tempore commodi voluptates
+                                        aliquam iure, praesentium et ullam eos quibusdam expedita
+                                        cupiditate libero veritatis! Architecto, voluptate explicabo.
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1 bg-light"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="gradient text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your premier destination for quality music albums.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Products</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
+                <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Add smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+
+    // Star rating functionality
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        star.addEventListener('click', function () {
+            const rating = this.dataset.rating;
+            stars.forEach(s => {
+                s.classList.remove('active');
+                if (s.dataset.rating <= rating) {
+                    s.classList.add('active');
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const starsContainer = document.getElementById('starsContainer');
+        const ratingValue = document.getElementById('ratingValue');
+        let currentRating = 0;
+
+        // Using event delegation for better modal compatibility
+        starsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('star')) {
+                const rating = parseInt(e.target.dataset.rating);
+                currentRating = rating;
+                updateStars(rating);
+                ratingValue.textContent = rating;
+            }
+        });
+
+        // Hover effects using event delegation
+        starsContainer.addEventListener('mouseover', function(e) {
+            if (e.target.classList.contains('star')) {
+                const rating = parseInt(e.target.dataset.rating);
+                highlightStars(rating);
+            }
+        });
+
+        starsContainer.addEventListener('mouseleave', function() {
+            highlightStars(currentRating);
+        });
+
+        function updateStars(rating) {
+            const stars = starsContainer.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        function highlightStars(rating) {
+            const stars = starsContainer.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        // Handle rating submission
+        const submitButton = document.querySelector('#ratingModal .btn.gradient');
+        submitButton.addEventListener('click', function() {
+            if (currentRating === 0) {
+                alert('Please select a rating before submitting!');
+                return;
+            }
+
+            const review = document.querySelector('#reviewText').value;
+            // Here you would send the rating to your backend
+            console.log('Rating:', currentRating);
+            console.log('Review:', review);
+
+            alert(`Thank you for your ${currentRating}-star rating!`);
+
+            // Reset the form
+            currentRating = 0;
+            updateStars(0);
+            ratingValue.textContent = '0';
+            document.querySelector('#reviewText').value = '';
+
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.querySelector('#ratingModal'));
+            modal.hide();
+        });
+    });
+</script>
+
+<!-- Rating Modal -->
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Rate this Album</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="rating-stars text-center mb-3">
+                    <div class="stars-container" id="starsContainer">
+                        <i class="far fa-star fa-2x star" data-rating="1"></i>
+                        <i class="far fa-star fa-2x star" data-rating="2"></i>
+                        <i class="far fa-star fa-2x star" data-rating="3"></i>
+                        <i class="far fa-star fa-2x star" data-rating="4"></i>
+                        <i class="far fa-star fa-2x star" data-rating="5"></i>
+                    </div>
+                    <div class="rating-value mt-2">Selected Rating: <span id="ratingValue">0</span>/5</div>
+                </div>
+                <div class="form-group">
+                    <label for="reviewText">Your Review (optional)</label>
+                    <textarea class="form-control" id="reviewText" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn gradient text-light">Submit Rating</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

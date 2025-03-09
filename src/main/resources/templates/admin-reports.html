@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - SoundVibe Store</title>
+
+    <!-- CSS links -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="shortcut icon" href="../images/soundVibe3.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style-admin.css">
+    <link rel="stylesheet" href="/css/admin-reports.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-header">
+        <img src="../images/soundVibe3.png" alt="SoundVibe Logo" class="sidebar-logo">
+        <h4>SoundVibe Admin</h4>
+    </div>
+
+    <nav class="nav-menu">
+        <div class="nav-item">
+            <a href="admin_dashboard.html" class="nav-link ">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="albums.html" class="nav-link">
+                <i class="fas fa-compact-disc"></i>
+                Albums
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="users.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                Users
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="orders.html" class="nav-link">
+                <i class="fas fa-shopping-cart"></i>
+                Orders
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="reports.html" class="nav-link active">
+                <i class="fas fa-chart-bar"></i>
+                Reports
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="fas fa-envelope"></i>
+                Send Email
+            </a>
+        </div>
+        <!-- <div class="nav-item">
+            <a href="#" class="nav-link text-danger">
+                <i class="fas fa-sign-out-alt"></i>
+                Logout
+            </a>
+        </div> -->
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="admin-header">
+        <h1 class="admin-title">Reports & Analytics</h1>
+        <div class="admin-actions">
+            <button class="export-btn">
+                <i class="fas fa-download"></i>
+                Export Report
+            </button>
+            <!-- </div>
+            <div class="admin-actions"> -->
+            <button class="btn btn-outline-secondary">
+                <i class="fas fa-bell"></i>
+            </button>
+            <button class="btn btn-outline-secondary">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(45deg, #4CAF50, #8BC34A);">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <div class="stat-value">$32,580</div>
+            <div class="stat-label">Total Revenue</div>
+            <div class="trend-indicator trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>12.5% vs last month</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(45deg, #2196F3, #03A9F4);">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+            </div>
+            <div class="stat-value">2,150</div>
+            <div class="stat-label">Total Orders</div>
+            <div class="trend-indicator trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>8.3% vs last month</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(45deg, #9C27B0, #E91E63);">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="stat-value">1,840</div>
+            <div class="stat-label">Total Customers</div>
+            <div class="trend-indicator trend-up">
+                <i class="fas fa-arrow-up"></i>
+                <span>5.2% vs last month</span>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(45deg, #FF9800, #F44336);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+            <div class="stat-value">15.8%</div>
+            <div class="stat-label">Conversion Rate</div>
+            <div class="trend-indicator trend-down">
+                <i class="fas fa-arrow-down"></i>
+                <span>2.1% vs last month</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Chart -->
+    <div class="report-section">
+        <div class="section-header">
+            <h2 class="section-title">Sales Overview</h2>
+            <div class="date-filter">
+                <select class="form-select">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 3 Months</option>
+                    <option>Last Year</option>
+                </select>
+                <button class="btn export-btn">Check</button>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Top Items -->
+    <div class="top-items">
+        <div class="report-section">
+            <div class="section-header">
+                <h2 class="section-title">Top Selling Albums</h2>
+            </div>
+            <ul class="item-list">
+                <li>
+                    <div class="item-info">
+                        <img src="../images/sour.jpg" alt="Album" class="item-image">
+                        <div>
+                            <div class="fw-bold">SOUR</div>
+                            <small class="text-muted">Olivia Rodrigo</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">352 sold</div>
+                        <small class="text-muted">$7,040</small>
+                    </div>
+                </li>
+                <!-- Add more items -->
+            </ul>
+        </div>
+
+        <div class="report-section">
+            <div class="section-header">
+                <h2 class="section-title">Top Customers</h2>
+            </div>
+            <ul class="item-list">
+                <li>
+                    <div class="item-info">
+                        <img src="../images/olivia.jpeg" alt="User" class="item-image">
+                        <div>
+                            <div class="fw-bold">Olivia Rodrigo</div>
+                            <small class="text-muted">23 orders</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <div class="fw-bold">$1,250</div>
+                        <small class="text-success">Loyal Customer</small>
+                    </div>
+                </li>
+                <!-- Add more customers -->
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sales Chart
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Sales',
+                data: [1200, 1900, 1500, 2100, 1800, 2500, 2200],
+                borderColor: '#8c52ff',
+                tension: 0.4,
+                fill: true,
+                backgroundColor: 'rgba(140, 82, 255, 0.1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true,
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

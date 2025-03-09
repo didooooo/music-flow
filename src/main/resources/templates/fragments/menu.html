@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<div th:fragment="footer" class="footer"><p>© 2026 Smart Wallet. All rights reserved.</p></div>
+
+<nav th:fragment="main-menu" class="navbar navbar-expand-lg navbar-light gradient sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <span class="fw-bold fst-italic">Music Flow</span>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" href="index.html"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="all_stocks.html"><i class="fas fa-compact-disc"></i> Products</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+                </li>
+            </ul>
+
+            <!-- Search Form -->
+            <form class="search-form mx-auto d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search for music albums..."
+                       aria-label="Search">
+                <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="./user_area/wishlist.html">
+                                <span class="cart-icon">
+                                    <i class="fa-regular fa-heart"></i>
+                                    <!-- <span class="cart-badge">1</span> -->
+                                </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./shopping_cart.html">
+                                <span class="cart-icon">
+                                    <i class="fa-solid fa-cart-shopping"></i>
+                                    <span class="cart-badge">1</span>
+                                </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">$100.00</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<nav th:fragment="secondary-menu" class="navbar navbar-expand-lg navbar-dark second-nav">
+    <div class="container-fluid">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="./user_registration.html"><i class="fas fa-user-plus"></i>
+                    Register</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-user"></i> Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="./user_login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="user_login.html"> <i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+</body>
+</html>

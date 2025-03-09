@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundVibe Payment</title>
+    <link rel="shortcut icon" href="../images/soundVibe3.png" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/order-preview.css">
+</head>
+<body>
+<div class="container-fluid p-0">
+    <!-- Main Navigation -->
+    <th:block th:insert="fragments/menu :: main-menu"></th:block>
+
+    <!-- Secondary Navigation -->
+    <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
+
+    <div class="order-section">
+        <div class="order-container">
+            <!-- Order Steps -->
+            <div class="order-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Shipping</div>
+                </div>
+                <div class="step active">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step active">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Review</div>
+                </div>
+            </div>
+
+
+            <section class="review-section">
+                <div class="review-container">
+                    <div class="order-summary">
+                        <h2 class="section-title">Order Review</h2>
+
+                        <!-- Order Items -->
+                        <div class="order-items">
+                            <div class="order-item">
+                                <div class="item-image">
+                                    <img src="../images/sour.jpg" alt="Album Cover">
+                                </div>
+                                <div class="item-details">
+                                    <div class="item-title">SOUR - Olivia Rodrigo</div>
+                                    <div class="item-meta">Format: Digital Album</div>
+                                </div>
+                                <div class="item-price">$19.99</div>
+                            </div>
+                            <!-- Add more order items as needed -->
+                        </div>
+
+                        <!-- Details Grid -->
+                        <div class="details-grid">
+                            <div class="detail-box">
+                                <div class="detail-header">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <h3 class="detail-title">Customer Details</h3>
+                                </div>
+                                <div class="detail-content">
+                                    <p>Olivia Rodrigo</p>
+                                    <p>olivia@email.com</p>
+                                    <p>+1 234 567 890</p>
+                                </div>
+                            </div>
+
+                            <div class="detail-box">
+                                <div class="detail-header">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <h3 class="detail-title">Shipping Details</h3>
+                                </div>
+                                <div class="detail-content">
+                                    <p>123 Music Street</p>
+                                    <p>Apt 4B</p>
+                                    <p>New York, NY 10001</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Summary -->
+                        <div class="price-summary">
+                            <div class="price-row">
+                                <span class="price-label">Subtotal</span>
+                                <span class="price-value">$19.99</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Shipping</span>
+                                <span class="price-value">$5.00</span>
+                            </div>
+                            <div class="price-row">
+                                <span class="price-label">Tax</span>
+                                <span class="price-value">$2.50</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span class="price-label">Total</span>
+                                <span class="price-value">$27.49</span>
+                            </div>
+                        </div>
+
+                        <button class="confirm-button" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                            Confirm Order
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Confirmation Modal -->
+            <div class="modal fade confirmation-modal" id="confirmationModal" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center">
+                            <div class="success-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3 class="mb-3">Order Confirmed!</h3>
+                            <p class="mb-4">Thank you for your purchase. Your order has been successfully placed.</p>
+                            <p class="text-muted mb-4">Order #: ORD-2024-001</p>
+                            <div class="d-grid gap-2">
+                                <a href="preview_order.html" class="btn btn-primary">Track Order</a>
+                                <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer class="gradient text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>About Us</h5>
+                    <p>Your premier destination for quality music albums.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light">Products</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Connect With Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
+                <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Card number formatting
+        const cardInput = document.querySelector('input[placeholder="1234 5678 9012 3456"]');
+        cardInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        const expiryInput = document.querySelector('input[placeholder="MM/YY"]');
+        expiryInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substr(0, 2) + '/' + value.substr(2);
+            }
+            e.target.value = value;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all radio buttons
+        const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+
+        // Get all payment forms
+        const paymentForms = {
+            'credit_card': document.getElementById('credit-card-form'),
+            'paypal': document.getElementById('paypal-form'),
+            'bank_transfer': document.getElementById('bank-transfer-form')
+        };
+
+        // Function to show selected payment form
+        function showSelectedForm(selectedValue) {
+            // Hide all forms first
+            Object.values(paymentForms).forEach(form => {
+                form.style.display = 'none';
+            });
+
+            // Show selected form
+            if (paymentForms[selectedValue]) {
+                paymentForms[selectedValue].style.display = 'block';
+            }
+        }
+
+        // Add change event listener to radio buttons
+        paymentMethods.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                showSelectedForm(e.target.value);
+            });
+        });
+
+        // Show default form (credit card)
+        showSelectedForm('credit_card');
+    });
+</script>
+</body>
+
+</html>

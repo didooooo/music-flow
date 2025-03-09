@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundVibe Payment</title>
+    <link rel="shortcut icon" href="../images/soundVibe3.png" type="image/x-icon">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/order-payment.css">
+</head>
+<body>
+<div class="container-fluid p-0">
+    <!-- Main Navigation -->
+    <th:block th:insert="fragments/menu :: main-menu"></th:block>
+
+    <!-- Secondary Navigation -->
+    <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
+
+    <div class="order-section">
+        <div class="order-container">
+            <!-- Order Steps -->
+            <div class="order-steps">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Shipping</div>
+                </div>
+                <div class="step active">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Payment</div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Review</div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Payment Method Selection with Dynamic Forms -->
+            <div class="form-section">
+                <h3 class="section-title text-center">Payment Method</h3>
+                <div class="payment-methods">
+                    <label class="payment-method-card">
+                        <input type="radio" name="payment_method" value="credit_card" checked>
+                        <div class="payment-method-content">
+                            <div class="payment-icon">
+                                <i class="fab fa-cc-visa"></i>
+                            </div>
+                            <h4>Credit Card</h4>
+                            <p>Pay securely with your credit card</p>
+                            <div class="check-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method-card">
+                        <input type="radio" name="payment_method" value="paypal">
+                        <div class="payment-method-content">
+                            <div class="payment-icon">
+                                <i class="fab fa-paypal"></i>
+                            </div>
+                            <h4>PayPal</h4>
+                            <p>Fast and secure payment with PayPal</p>
+                            <div class="check-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="payment-method-card">
+                        <input type="radio" name="payment_method" value="bank_transfer">
+                        <div class="payment-method-content">
+                            <div class="payment-icon">
+                                <i class="fas fa-university"></i>
+                            </div>
+                            <h4>Bank Transfer</h4>
+                            <p>Direct payment from your bank account</p>
+                            <div class="check-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Dynamic Payment Forms -->
+                <div class="payment-forms">
+                    <!-- Credit Card Form -->
+                    <div id="credit-card-form" class="payment-form">
+                        <div class="form-group">
+                            <label class="form-label">Card Holder Name</label>
+                            <input type="text" class="form-control" placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-control card-number-input"
+                                   placeholder="1234 5678 9012 3456" maxlength="19">
+                            <i class="fas fa-credit-card card-icon"></i>
+                        </div>
+
+                        <div class="expiry-cvv">
+                            <div class="form-group">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">CVV</label>
+                                <input type="password" class="form-control" placeholder="123" maxlength="3">
+                                <i class="fas fa-lock card-icon"></i>
+                            </div>
+                        </div>
+                        <button type="submit" class="checkout-btn">
+                            Pay Now - $99.99
+                        </button>
+                    </div>
+
+                    <!-- PayPal Form -->
+                    <div id="paypal-form" class="payment-form" style="display: none;">
+                        <div class="text-center mb-4">
+                            <img src="/images/paypal-logo.jpg" alt="PayPal" style="max-width: 200px;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">PayPal Email</label>
+                            <input type="email" class="form-control" placeholder="Enter your PayPal email">
+                        </div>
+                        <button type="submit" class="checkout-btn">
+                            Pay Now - $99.99
+                        </button>
+                    </div>
+
+                    <!-- Bank Transfer Form -->
+                    <div id="bank-transfer-form" class="payment-form" style="display: none;">
+                        <div class="bank-details">
+                            <div class="text-center mb-4">
+                                <div class="bank-icon-wrapper">
+                                    <i class="fas fa-university fa-3x gradient-text"></i>
+                                </div>
+                                <h4 class="mt-3">Bank Transfer Details</h4>
+                                <!-- <p class="text-muted">Please transfer the exact amount to the following account</p> -->
+                            </div>
+
+                            <div class="bank-info">
+                                <div class="info-card mb-4">
+                                    <div class="amount-display text-center p-4 mb-4">
+                                        <span class="amount-label">Amount to Pay</span>
+                                        <h2 class="gradient-text mb-0">$99.99</h2>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="bankName" class="form-label">
+                                            <i class="fas fa-landmark me-2"></i>Bank Name
+                                        </label>
+                                        <input type="text" id="bankName" class="form-control form-control-lg"
+                                               value="SoundVibe International Bank" readonly>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="accountName" class="form-label">
+                                            <i class="fas fa-user me-2"></i>Account Name
+                                        </label>
+                                        <input type="text" id="accountName" class="form-control form-control-lg"
+                                               value="SoundVibe Store Ltd." readonly>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="iban" class="form-label">
+                                            <i class="fas fa-credit-card me-2"></i>IBAN
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="text" id="iban" class="form-control form-control-lg"
+                                                   value="BG29 NWBK 6016 1331 9268 19" readonly>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                    onclick="copyToClipboard('iban')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-4">
+                                        <label for="bic" class="form-label">
+                                            <i class="fas fa-globe me-2"></i>BIC/Swift
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="text" id="bic" class="form-control form-control-lg"
+                                                   value="NWBKGB2L" readonly>
+                                            <button class="btn btn-outline-secondary" type="button"
+                                                    onclick="copyToClipboard('bic')">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="checkout-btn mt-4">
+                                    <i class="fas fa-check-circle me-2"></i>Confirm Transfer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="gradient text-light mt-5">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>About Us</h5>
+                <p>Your premier destination for quality music albums.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-light">Products</a></li>
+                    <li><a href="#" class="text-light">Contact</a></li>
+                    <li><a href="#" class="text-light">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Connect With Us</h5>
+                <div class="social-links">
+                    <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="mt-4">
+        <div class="text-center">
+            <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
+            <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
+        </div>
+    </div>
+</footer>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Card number formatting
+        const cardInput = document.querySelector('input[placeholder="1234 5678 9012 3456"]');
+        cardInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formattedValue += ' ';
+                }
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        // Expiry date formatting
+        const expiryInput = document.querySelector('input[placeholder="MM/YY"]');
+        expiryInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substr(0, 2) + '/' + value.substr(2);
+            }
+            e.target.value = value;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all radio buttons
+        const paymentMethods = document.querySelectorAll('input[name="payment_method"]');
+
+        // Get all payment forms
+        const paymentForms = {
+            'credit_card': document.getElementById('credit-card-form'),
+            'paypal': document.getElementById('paypal-form'),
+            'bank_transfer': document.getElementById('bank-transfer-form')
+        };
+
+        // Function to show selected payment form
+        function showSelectedForm(selectedValue) {
+            // Hide all forms first
+            Object.values(paymentForms).forEach(form => {
+                form.style.display = 'none';
+            });
+
+            // Show selected form
+            if (paymentForms[selectedValue]) {
+                paymentForms[selectedValue].style.display = 'block';
+            }
+        }
+
+        // Add change event listener to radio buttons
+        paymentMethods.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                showSelectedForm(e.target.value);
+            });
+        });
+
+        // Show default form (credit card)
+        showSelectedForm('credit_card');
+    });
+
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        element.select();
+        document.execCommand('copy');
+
+        // Show feedback
+        const button = element.nextElementSibling;
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i>';
+        button.classList.add('btn-success');
+
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.classList.remove('btn-success');
+        }, 2000);
+    }
+</script>
+</body>
+
+</html>
