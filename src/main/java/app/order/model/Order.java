@@ -1,0 +1,46 @@
+package app.order.model;
+
+import app.address.model.Address;
+import app.payment.model.Payment;
+import app.shipment.model.Shipment;
+import app.user.model.User;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @ManyToOne
+    private User user;
+    @ManyToOne
+    private Address address;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
+    @OneToMany
+    private List<OrderInfo> products;
+    @ManyToOne
+    private Shipment shipment;
+    @OneToOne
+    private Payment payment;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+}
