@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Table(name = "notifications")
 @Entity
 @Getter
 @Setter
@@ -28,8 +29,8 @@ public class Notification {
     @Column(nullable = false)
     private String description;
     private boolean forAdmin;
-    private boolean read;
-    private boolean deleted;
+    private boolean isRead;
+    private boolean isDeleted;
     private String attachmentUrl;
     @ManyToOne
     private User user;

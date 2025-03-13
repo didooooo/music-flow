@@ -24,6 +24,7 @@ public class ShoppingCart {
     private User user;
     @OneToMany
     private List<ShoppingCartInfo> productInfo;
+    private int totalPrice;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp

@@ -27,21 +27,22 @@
                     </div>
 
                     <div class="login-form">
-                        <form action="" method="post">
+                        <form th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
                             <!-- Username field -->
                             <div class="form-group">
-                                <label for="user_username" class="form-label">Username</label>
-                                <input type="text" id="user_username" class="form-control"
+                                <label for="username" class="form-label">Username</label>
+                                <input th:field="*{username}" type="text" id="username" class="form-control"
                                        placeholder="Enter your username"
                                        required="required"
                                        name="user_username">
                             </div>
+                            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" ></div>
 
                             <!-- Password field -->
                             <div class="form-group">
-                                <label for="user_password" class="form-label">Password</label>
+                                <label for="password" class="form-label">Password</label>
                                 <div class="input-group">
-                                    <input type="password" id="user_password" class="form-control"
+                                    <input th:field="*{password}" type="password" id="password" class="form-control"
                                            placeholder="Enter your password"
                                            required="required"
                                            name="user_password">
@@ -49,6 +50,7 @@
                                         <i class="fa fa-eye"></i>
                                     </button>
                                 </div>
+                                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" ></div>
                                 <div class="forgot-password">
                                     <a href="forgot_password.php">Forgot Password?</a>
                                 </div>
@@ -60,24 +62,9 @@
 
                             <div class="register-link">
                                 <p class="mb-0">Don't have an account?
-                                    <a href="user_registration.html">Register</a>
+                                    <a href="/register">Register</a>
                                 </p>
                             </div>
-
-                            <!-- <div class="social-login">
-                                <p>Or login with</p>
-                                <div class="social-buttons">
-                                    <a href="#" class="social-btn">
-                                        <i class="fab fa-google"></i>
-                                    </a>
-                                    <a href="#" class="social-btn">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                    <a href="#" class="social-btn">
-                                        <i class="fab fa-twitter"></i>
-                                    </a>
-                                </div>
-                            </div> -->
                         </form>
                     </div>
                 </div>

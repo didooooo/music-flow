@@ -21,6 +21,7 @@ public class Statistics {
     private BigDecimal totalMoney;
     private int totalCustomers;
     private int totalOrders;
+    private int totalRecords;
     private int pendingOrders;
     private int shippedOrders;
     private int activeUsers;

@@ -20,53 +20,11 @@
 <div class="admin-sidebar">
     <div class="sidebar-header">
         <img src="../images/soundVibe3.png" alt="SoundVibe Logo" class="sidebar-logo">
-        <h4>SoundVibe Admin</h4>
+        <h4>Music Flow Admin</h4>
     </div>
 
-    <nav class="nav-menu">
-        <div class="nav-item">
-            <a href="admin_dashboard.html" class="nav-link ">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="albums.html" class="nav-link">
-                <i class="fas fa-compact-disc"></i>
-                Albums
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="users.html" class="nav-link">
-                <i class="fas fa-users"></i>
-                Users
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="orders.html" class="nav-link">
-                <i class="fas fa-shopping-cart"></i>
-                Orders
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="reports.html" class="nav-link active">
-                <i class="fas fa-chart-bar"></i>
-                Reports
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="fas fa-envelope"></i>
-                Send Email
-            </a>
-        </div>
-        <!-- <div class="nav-item">
-            <a href="#" class="nav-link text-danger">
-                <i class="fas fa-sign-out-alt"></i>
-                Logout
-            </a>
-        </div> -->
-    </nav>
+    <th:block th:insert="fragments/menu :: admin-menu"></th:block>
+
 </div>
 
 <!-- Main Content -->

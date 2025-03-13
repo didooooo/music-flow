@@ -1,5 +1,6 @@
 package app.order.model;
 
+import app.record.model.Record;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,5 +18,7 @@ public class OrderInfo {
     private UUID id;
     @ManyToOne
     private Order order;
+    @ManyToOne
+    private Record record;
     private int quantity;
 }
