@@ -13,10 +13,8 @@ import app.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,7 +51,7 @@ public class StatisticScheduler {
         int totalRecords = recordList.size();
         BigDecimal totalPrice = new BigDecimal(0);
         for (Order order : orders) {
-            for (OrderInfo product : order.getProducts()) {
+            for (OrderInfo product : order.getOrderInfos()) {
                 int quantity = product.getQuantity();
                 BigDecimal price = product.getRecord().getPrice();
                 price = price.multiply(new BigDecimal(quantity));

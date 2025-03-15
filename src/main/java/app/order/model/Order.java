@@ -36,7 +36,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     @OneToMany
-    private List<OrderInfo> products;
+    private List<OrderInfo> orderInfos;
     @ManyToOne
     private Shipment shipment;
     private BigDecimal totalPrice;

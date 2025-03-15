@@ -1,27 +1,26 @@
-package app.record.model;
+package app.web.dto.enums;
 
+import app.record.model.Format;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-import java.text.Normalizer;
-
-public enum Format {
+public enum FormatRequest {
     CD("CD"),
     VINYL("VINYL"),
-    DVD("DVD"),
-    UNKNOWN("UNKNOWN");
+    DVD("DVD");
     private final String code;
 
-    Format(String code) {
+
+    FormatRequest(String code) {
         this.code = code;
     }
 
     @JsonCreator
-    public static Format getByCode(String code) {
-        for (Format value : Format.values()) {
+    public static FormatRequest getByCode(String code) {
+        for (FormatRequest value : FormatRequest.values()) {
             if (value.code.equals(code)) {
                 return value;
             }
         }
-        return UNKNOWN;
+        return null;
     }
 }

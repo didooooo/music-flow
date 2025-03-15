@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" href="index.html"><i class="fas fa-home"></i> Home</a>
+                    <a class="nav-link active" href="/"><i class="fas fa-home"></i> Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="all_stocks.html"><i class="fas fa-compact-disc"></i> Products</a>
@@ -84,39 +84,40 @@
         </ul>
     </div>
 </nav>
+
 <nav th:fragment="admin-menu" class="nav-menu">
     <div class="nav-item">
-        <a href="/admin/dashboard" class="nav-link active">
+        <a href="/admin/dashboard"  th:classappend="${page=='dashboard' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-home"></i>
             Dashboard
         </a>
     </div>
     <div class="nav-item">
-        <a href="albums.html" class="nav-link">
+        <a href="/admin/records"  th:classappend="${page=='records' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-compact-disc"></i>
-            Albums
+            Records
         </a>
     </div>
     <div class="nav-item">
-        <a href="users.html" class="nav-link">
+        <a href="users.html" th:classappend="${page=='users' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-users"></i>
             Users
         </a>
     </div>
     <div class="nav-item">
-        <a href="orders.html" class="nav-link">
+        <a href="/admin/orders" th:classappend="${page=='orders' ? ' active' : ''}"  class="nav-link">
             <i class="fas fa-shopping-cart"></i>
             Orders
         </a>
     </div>
     <div class="nav-item">
-        <a href="reports.html" class="nav-link">
+        <a href="reports.html" th:classappend="${page=='reports' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-chart-bar"></i>
             Reports
         </a>
     </div>
     <div class="nav-item">
-        <a href="#" class="nav-link">
+        <a href="#" th:classappend="${page=='email' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-envelope"></i>
             Send Email
         </a>
