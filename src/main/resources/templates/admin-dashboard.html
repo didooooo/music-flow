@@ -102,7 +102,7 @@
                 <tr th:each="order : ${orders}">
                     <td th:text="${order.id}">#ORD-001</td>
                     <td th:text="${order.firstName} + ${order.lastName}">John Doe</td>
-                    <td th:text="${order.products.getFirst()+'...'}">SOUR - Olivia Rodrigo</td>
+                    <td th:text="${order.getOrderInfos().getFirst()+'...'}">SOUR - Olivia Rodrigo</td>
                     <td th:text="${order.totalPrice}">$19.99</td>
                     <td>
                         <span th:if="${order.status.name() == 'COMPLETED' or order.status.name() == 'SHIPPED'}" th:text="${order.status.name()}" class="status-badge status-completed">Completed</span>

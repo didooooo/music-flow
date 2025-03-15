@@ -13,13 +13,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style-admin.css">
     <link rel="stylesheet" href="/css/admin-products.css">
+    <script src="https://ucarecdn.com/libs/widget/3.12.0/uploadcare.full.min.js"></script>
+
 </head>
 
 <body>
 <!-- Sidebar -->
 <div class="admin-sidebar">
     <div class="sidebar-header">
-        <img src="../images/soundVibe3.png" alt="SoundVibe Logo" class="sidebar-logo">
         <h4>Music Flow Admin</h4>
     </div>
 
@@ -31,33 +32,30 @@
 <div class="main-content">
     <!-- Header -->
     <div class="admin-header">
-        <h1 class="admin-title">Album Management</h1>
+        <h1 class="admin-title">Record Management</h1>
         <div class="admin-actions">
             <button class="btn btn-outline-secondary">
                 <i class="fas fa-bell"></i>
             </button>
-            <button class="btn btn-outline-secondary">
+            <a href="/logout" class="btn btn-outline-secondary">
                 <i class="fas fa-sign-out-alt"></i>
-            </button>
+            </a>
         </div>
     </div>
 
     <!-- Action Bar -->
     <div class="action-bar">
         <div class="search-box">
-            <input type="text" class="form-control" placeholder="Search albums...">
-            <i class="fas fa-search"></i>
-        </div>
-        <div class="bulk-actions">
-            <select class="form-select bulk-select">
-                <option>Delete Selected</option>
-                <option>Update Stock</option>
-            </select>
-            <button class="btn btn-dark">Apply</button>
+            <form th:action="@{'/records/search?name='+ *{name}}" th:object="${search}" th:method="GET">
+                <div class="input-group">
+                    <input th:field="*{name}" type="text" class="form-control" placeholder="Search albums...">
+                    <button class="btn btn-dark">Search</button>
+                </div>
+            </form>
         </div>
         <button class="add-album-btn" data-bs-toggle="modal" data-bs-target="#addAlbumModal">
             <i class="fas fa-plus"></i>
-            Add New Album
+            Add New Record
         </button>
     </div>
 
@@ -67,10 +65,22 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>
-                        <input type="checkbox" class="form-check-input">
-                    </th>
-                    <th>Stock ID</th>
+<!--                    <th>-->
+<!--                        <input type="checkbox" class="form-check-input" id="selectAll">-->
+<!--                        <script>-->
+<!--                            document.addEventListener("DOMContentLoaded", function () {-->
+<!--                                const selectAllCheckbox = document.getElementById('selectAll');-->
+<!--                                const checkboxes = document.querySelectorAll('.form-check-input');-->
+
+<!--                                selectAllCheckbox.addEventListener('change', function () {-->
+<!--                                    checkboxes.forEach(function (checkbox) {-->
+<!--                                        checkbox.checked = selectAllCheckbox.checked;-->
+<!--                                    });-->
+<!--                                })-->
+<!--                            });-->
+<!--                        </script>-->
+<!--                    </th>-->
+                    <th>Serial Number</th>
                     <th>Album Title</th>
                     <th>Stock Image</th>
                     <th>Amount</th>
@@ -80,48 +90,87 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>
-                        <input type="checkbox" class="form-check-input">
-                    </td>
-                    <td>#ALB001</td>
-                    <td>SOUR</td>
-                    <td><img src="../images/sour.jpg" alt="Album Cover"></td>
-                    <td>$19.99</td>
-                    <td><span class="stock-status in-stock">In Stock</span></td>
-                    <td>150</td>
+                <tr th:each="record, stat: ${records.content}">
+                    <td th:text="'#REC-' +${stat.index+1}">#ALB001</td>
+                    <td th:text="${record.title}">SOUR</td>
+                    <td><img th:src="${record.image}" alt="Album Cover"></td>
+                    <td th:text="${record.price}">$19.99</td>
+                    <td><span class="stock-status " th:classappend="${record.quantity != 0} ? 'in-stock':'out-stock'"
+                              th:text="${record.quantity == 0 ? 'Out Of Stock' : 'In Stock'}">In Stock</span></td>
+                    <td th:text="${record.quantity}">150</td>
                     <td>
                         <div class="action-btns">
                             <button class="action-btn edit-btn" title="Edit" data-bs-toggle="modal"
-                                    data-bs-target="#addAlbumModal">
+                                    th:data-bs-target="'#modal-'+${record.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
+                            <!--                                 onclick="loadRecord(this)" th:data-id="${record.id}"-->
                             <button class="action-btn delete-btn" title="Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </td>
                 </tr>
-                <!-- Add more rows as needed -->
                 </tbody>
             </table>
         </div>
+        <script>
+            function loadRecord(button) {
+                let recordId = button.getAttribute("data-id");
+
+                // Изпращаме AJAX заявка към сървъра
+                fetch(`/admin/records/${recordId}`)
+                    .then(response => response.json()) // Преобразуваме отговорa в JSON
+                    .then(data => {
+                        // Попълване на формата в модала
+                        document.getElementById("title").value = data.title;
+                        document.getElementById("artistInput").value = data.artists.join(", ");
+                        document.getElementById("price").value = data.price;
+                        document.getElementById("quantity").value = data.quantity;
+                        document.getElementById("duration").value = data.duration;
+                        document.getElementById("totalTracks").value = data.totalTracks;
+                        document.getElementById("releaseDate").value = data.releaseDate;
+                        document.getElementById("spotifyUrl").value = data.spotifyUrl;
+                        document.getElementById("description").value = data.description;
+
+                        // Отваряне на модалния прозорец
+                        let modal = new bootstrap.Modal(document.getElementById('addAlbumModal'));
+                        modal.show();
+                    })
+                    .catch(error => console.error("Error loading record:", error));
+            }
+        </script>
 
         <!-- Pagination -->
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
+        <nav aria-label="Page navigation" th:if="${search.name==null and !records.isEmpty()}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:if="${records.hasPrevious()}">
+                    <a class="page-link" th:href="@{/admin/records(page=${records.number - 1})}"><i
+                            class="fas fa-chevron-left"></i></a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
+                <li class="page-item" th:each="page : ${#numbers.sequence(0, records.totalPages - 1)}"
+                    th:classappend="${page == records.number} ? 'active'">
+                    <a class="page-link" th:href="@{/admin/records(page=${page})}" th:text="${page + 1}"></a>
+                </li>
+                <li class="page-item" th:if="${records.hasNext()}">
+                    <a class="page-link" th:href="@{/admin/records(page=${records.number + 1})}"><i
+                            class="fas fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+        <nav aria-label="Page navigation" th:if="${search.name != null and !records.isEmpty()}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:if="${records.hasPrevious()}">
+                    <a class="page-link" th:href="@{/records/search(name=${search.name},page=${records.number - 1})}"><i
+                            class="fas fa-chevron-left"></i></a>
+                </li>
+                <li class="page-item" th:each="page : ${#numbers.sequence(0, records.totalPages - 1)}"
+                    th:classappend="${page == records.number} ? 'active'">
+                    <a class="page-link" th:href="@{/records/search(name=${search.name},page=${page})}" th:text="${page + 1}"></a>
+                </li>
+                <li class="page-item" th:if="${records.hasNext()}">
+                    <a class="page-link" th:href="@{/records/search(name=${search.name},page=${records.number + 1})}"><i
+                            class="fas fa-chevron-right"></i></a>
                 </li>
             </ul>
         </nav>
@@ -129,140 +178,224 @@
 </div>
 
 <!-- Add/Edit Album Modal -->
-<div class="modal fade" id="addAlbumModal" tabindex="-1">
+<div th:each="record : ${records.content}" class="modal fade" th:id="'modal-'+${record.id}" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add New Album</h5>
+                <h5 class="modal-title" th:text="'Edit Record [' + ${record.id}+']'">Add New Album</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form th:action="@{'/records/save/'+${record.id}}" th:method="PUT"
+                      th:object="${recordsRequest}">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Album Title</label>
-                                <input type="text" class="form-control" required>
+                                <input th:field="*{title}" type="text" id="titleInput"
+                                       class="form-control" required th:attr="data-title=${record.title}">
                             </div>
+                            <script th:inline="javascript">
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    const titleInputs = document.querySelectorAll('input[name="title"]');
+                                    const priceInputs = document.querySelectorAll('input[name="price"]');
+                                    const durationInputs = document.querySelectorAll('input[name="duration"]');
+                                    const quantityInputs = document.querySelectorAll('input[name="quantity"]');
+                                    const tracksInputs = document.querySelectorAll('input[name="totalTracks"]');
+                                    const spotifyInputs = document.querySelectorAll('input[name="spotifyUrl"]');
+                                    const releaseDateInputs = document.querySelectorAll('input[name="releaseDate"]');
+
+                                    titleInputs.forEach(input => {
+                                        const title = input.getAttribute("data-title"); // Вземане на стойността от data-title
+                                        input.value = title; // Задаване на стойността на полето
+                                    });
+                                    priceInputs.forEach(input => {
+                                        const price = input.getAttribute("data-price"); // Вземане на стойността от data-title
+                                        input.value = price;
+                                    });
+                                    durationInputs.forEach(input => {
+                                        const duration = input.getAttribute("data-duration"); // Вземане на стойността от data-title
+                                        input.value = duration;
+                                    });
+                                    quantityInputs.forEach(input => {
+                                        const quantity = input.getAttribute("data-quantity"); // Вземане на стойността от data-title
+                                        input.value = quantity;
+                                    });
+                                    tracksInputs.forEach(input => {
+                                        const tracks = input.getAttribute("data-tracks"); // Вземане на стойността от data-title
+                                        input.value = tracks;
+                                    });
+                                    spotifyInputs.forEach(input => {
+                                        const url = input.getAttribute("data-spotify-url"); // Вземане на стойността от data-title
+                                        input.value = url;
+                                    });
+                                    releaseDateInputs.forEach(input => {
+                                        const date = input.getAttribute("data-date"); // Вземане на стойността от data-title
+                                        input.value = date;
+                                    });
+                                    const genreSelects = document.querySelectorAll('.genreSelect');
+
+                                    genreSelects.forEach(select => {
+                                        const genre = select.getAttribute("data-genre");
+                                        if (genre) {
+                                            select.value = genre;
+                                        }
+                                    });
+                                    const formatSelects = document.querySelectorAll('.formatSelect');
+
+                                    formatSelects.forEach(select => {
+                                        const format = select.getAttribute("data-format");
+                                        if (format) {
+                                            select.value = format;
+                                        }
+                                    });
+                                    const typeSelects = document.querySelectorAll('.typeSelect');
+
+                                    typeSelects.forEach(select => {
+                                        const type = select.getAttribute("data-type");
+                                        if (type) {
+                                            select.value = type;
+                                        }
+                                    });
+                                    const descriptionTextareas = document.querySelectorAll('.descriptionTextarea');
+                                    descriptionTextareas.forEach(textarea => {
+                                        const description = textarea.getAttribute("data-description");
+                                        if (description) {
+                                            textarea.value = description;
+                                        }
+                                    });
+                                });
+                            </script>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Artist</label>
-                                <input list="options" id="artistInput" class="form-control" required>
+                                <input list="options" id="artistInput" class="form-control artistInputs">
                                 <datalist id="options">
-                                    <option value="Select Artist">
-                                    <option value="Olivia Rodrigo">
-                                    <option value="Tate McRay">
-                                    <option value="Sabrina Carpenter">
-                                    <option value="Ariana Grande">
+                                    <option th:each="artist : *{artists}" th:value="${artist.name}"
+                                            th:text="${artist.name}">
                                 </datalist>
                             </div>
                             <!-- Контейнер за избраните артисти -->
-                            <div id="selectedArtists"></div>
+                            <div id="selectedArtists" class="selectedArtists"></div>
 
                             <!-- Скрито поле, за да изпратим артистите към Spring -->
-                            <input type="hidden" name="artists" id="artistsField">
+                            <input type="hidden" th:field="*{artistsInput}" name="artists" class="artistFields"
+                                   id="artistsField">
 
                         </div>
+
                         <script>
-                            const artistInput = document.getElementById("artistInput");
-                            const selectedArtistsDiv = document.getElementById("selectedArtists");
-                            const artistsField = document.getElementById("artistsField");
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const artistInputs = document.querySelectorAll('.artistInputs');
+                                const selectedArtistsDivs = document.querySelectorAll('.selectedArtists');
+                                const artistsFields = document.querySelectorAll('.artistFields');
 
-                            let selectedArtists = [];
+                                artistInputs.forEach((artistInput, index) => {
+                                    let artistsString = "";
 
-                            // Добавяне на артист при избор
-                            artistInput.addEventListener("change", function () {
-                                const artist = artistInput.value.trim();
-                                if (artist && !selectedArtists.includes(artist)) {
-                                    selectedArtists.push(artist); // Добавяне на артиста към списъка
-                                    updateArtistsDisplay(); // Актуализация на интерфейса
-                                }
-                                artistInput.value = ""; // Изчистване на полето за нов избор
-                            });
+                                    artistInput.addEventListener("change", function () {
+                                        addArtist(artistInput, selectedArtistsDivs[index], artistsFields[index]);
+                                    });
 
-                            artistInput.addEventListener("keydown", function () {
-                                if (event.key === "Enter") {
-                                    event.preventDefault(); // Предотвратяване на поведението по подразбиране (например submit на форма)
-                                    const artist = artistInput.value.trim();
-                                    if (artist && !selectedArtists.includes(artist)) {
-                                        selectedArtists.push(artist); // Добавяне на артиста към списъка
-                                        updateArtistsDisplay(); // Актуализация на интерфейса
-                                        artistInput.value = ""; // Изчистване на полето за нов избор
+                                    artistInput.addEventListener("keydown", function (event) {
+                                        if (event.key === "Enter") {
+                                            event.preventDefault();
+                                            addArtist(artistInput, selectedArtistsDivs[index], artistsFields[index]);
+                                        }
+                                    });
+
+                                    function addArtist(input, selectedDiv, hiddenField) {
+                                        const artist = input.value.trim();
+                                        if (artist && !artistsString.includes(artist)) {
+                                            if (artistsString !== "") {
+                                                artistsString += ",";
+                                            }
+                                            artistsString += artist;
+                                            updateArtistsDisplay(selectedDiv, hiddenField);
+                                        }
+                                        input.value = "";
                                     }
-                                }
 
-                            });
+                                    function updateArtistsDisplay(selectedDiv, hiddenField) {
+                                        selectedDiv.innerHTML = "";
 
-                            // Актуализация на интерфейса и скритото поле
-                            function updateArtistsDisplay() {
-                                selectedArtistsDiv.innerHTML = ""; // Изчистване на контейнера
-                                selectedArtists.forEach(artist => {
-                                    let span = document.createElement("span");
-                                    span.textContent = artist;
-                                    span.classList.add("artist-tag");
+                                        const artistArray = artistsString.split(",").filter(a => a.trim() !== "");
+                                        artistArray.forEach(artist => {
+                                            let span = document.createElement("span");
+                                            span.textContent = artist;
+                                            span.classList.add("artist-tag");
 
-                                    // Бутон за премахване на артиста
-                                    let removeBtn = document.createElement("button");
-                                    removeBtn.textContent = "x";
-                                    removeBtn.onclick = function () {
-                                        selectedArtists = selectedArtists.filter(a => a !== artist); // Премахване на артиста
-                                        updateArtistsDisplay(); // Актуализация на интерфейса
-                                    };
+                                            let removeBtn = document.createElement("button");
+                                            removeBtn.textContent = "x";
+                                            removeBtn.onclick = function () {
+                                                artistsString = artistsString.split(",").filter(a => a !== artist).join(",");
+                                                updateArtistsDisplay(selectedDiv, hiddenField);
+                                            };
 
-                                    span.appendChild(removeBtn);
-                                    selectedArtistsDiv.appendChild(span);
+                                            span.appendChild(removeBtn);
+                                            selectedDiv.appendChild(span);
+                                        });
+
+                                        if (artistsString.trim() === "") {
+                                            selectedDiv.style.display = "none";
+                                        } else {
+                                            selectedDiv.style.display = "block";
+                                        }
+
+                                        hiddenField.value = artistsString;
+                                    }
                                 });
-
-                                // Записване на артистите в скритото поле (като CSV)
-                                artistsField.value = selectedArtists.join(",");
-                            }
+                            });
                         </script>
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Price</label>
-                                <input type="number" class="form-control" required>
+                                <input th:field="*{price}" type="text" class="form-control" required
+                                       th:attr="data-price=${record.price}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Stock Quantity</label>
-                                <input type="number" class="form-control" required>
+                                <input th:field="*{quantity}" type="number" class="form-control" required
+                                       th:attr="data-quantity=${record.quantity}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Duration</label>
-                                <input type="number" class="form-control" required>
+                                <input th:field="*{duration}" type="text" class="form-control" required
+                                       th:attr="data-duration=${record.duration}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Total tracks</label>
-                                <input type="number" class="form-control" required>
+                                <input th:field="*{totalTracks}" type="number" class="form-control" required
+                                       th:attr="data-tracks=${record.totalTracks}">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Genre</label>
-                                <select class="form-select" required>
-                                    <option value="">Select Genre</option>
-                                    <option>Pop</option>
-                                    <option>Rock</option>
-                                    <option>Jazz</option>
-                                    <option>Classical</option>
+                                <select th:field="*{genre}" class="form-select genreSelect" required
+                                        th:attr="data-genre=${record.genre}">
+                                    <option th:each="genre : ${T(app.web.dto.enums.GenreRequest).values()}"
+                                            th:value="${genre}" th:text="${genre}">Select Genre
+                                    </option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Type</label>
-                                <select class="form-select" required>
-                                    <option value="">Select Type</option>
-                                    <option>Single</option>
-                                    <option>Album</option>
-
+                                <select th:field="*{type}" class="form-select typeSelect" required
+                                        th:attr="data-type=${record.type}">
+                                    <option th:each="type : ${T(app.web.dto.enums.TypeRequest).values()}"
+                                            th:value="${type}" th:text="${type}">Select Type
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -270,12 +403,11 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Format (Media Type)</label>
-                                <select class="form-select" required>
-                                    <option value="">Select Type</option>
-                                    <option>CD</option>
-                                    <option>DVD</option>
-                                    <option>Vinyl</option>
-                                    <option>Digital Download</option>
+                                <select th:field="*{format}" class="form-select formatSelect" required
+                                        th:attr="data-format=${record.format}">
+                                    <option th:each="format : ${T(app.web.dto.enums.FormatRequest).values()}"
+                                            th:value="${format}" th:text="${format}">Select Type
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -283,30 +415,269 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">Release Date</label>
-                                <input type="date" class="form-control" required>
+                                <input th:field="*{releaseDate}" type="date" class="form-control" required
+                                       th:attr="data-date=${record.releaseDate}">
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label">Album Cover</label>
-                                <input type="file" class="form-control" accept="image/*" required>
+                                <input th:field="*{recordCover}" type="hidden" role="uploadcare-uploader"
+                                       name="record_image" id="record_image"/>
+                                <!--                                <input type="file" class="form-control" accept="image/*" required>-->
+                            </div>
+                            <script>
+                                uploadcare.start({
+                                    publicKey: '0c784d99760e23804a0e'  // Замени с твоя публичен ключ
+                                });
+
+                                var widget = uploadcare.Widget('#record_image');
+                                widget.on('change', function (fileInfo) {
+                                    if (fileInfo) {
+                                        // Тук можеш да изпратиш URL-то на каченото изображение
+                                        console.log('Файлът е качен! URL:', fileInfo.cdnUrl);
+                                        document.getElementById('record_image').value = fileInfo.cdnUrl; // Това ще сложи URL-то в твоя input
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Spotify Link</label>
+                                <input th:field="*{spotifyUrl}" type="text" class="form-control" required
+                                       th:attr="data-spotify-url=${record.spotifyUrl}">
                             </div>
                         </div>
 
                         <div class="col-12">
                             <div class="form-group">
                                 <label class="form-label">Description</label>
-                                <textarea class="form-control" rows="3"></textarea>
+                                <textarea th:field="*{description}" class="form-control descriptionTextarea" rows="3"
+                                          th:attr="data-description=${record.description}"></textarea>
                             </div>
                         </div>
 
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-dark">Save Album</button>
+                    </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-dark">Save Album</button>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addAlbumModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/records/save}" th:object="${recordsRequest}" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Album Title</label>
+                                <input th:field="*{title}" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Artist</label>
+                                <input list="option" id="input" class="form-control">
+                                <datalist id="option">
+                                    <option th:each="artist : *{artists}" th:value="${artist.name}"
+                                            th:text="${artist.name}">
+                                </datalist>
+                            </div>
+                            <!-- Контейнер за избраните артисти -->
+                            <div id="selectedArtists1"></div>
+
+                            <!-- Скрито поле, за да изпратим артистите към Spring -->
+                            <input type="hidden" th:field="*{artistsInput}" name="artists" id="artistsField1">
+
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const artistInput = document.getElementById("input");
+                                const selectedArtistsDiv = document.getElementById("selectedArtists1");
+                                const artistsField = document.getElementById("artistsField1");  // Скритото поле, свързано с th:field
+
+                                // Инициализираме променлива за събиране на артистите като низ
+                                let artistsString = "";
+
+                                // Обработчик за добавяне на артист при въвеждане в полето
+                                artistInput.addEventListener("change", function () {
+                                    const artist = artistInput.value.trim();  // Вземаме стойността от полето
+                                    if (artist && !artistsString.includes(artist)) {  // Проверка дали артистът вече не е добавен
+                                        if (artistsString !== "") {
+                                            artistsString += ",";  // Добавяме разделител ',' ако вече има артисти
+                                        }
+                                        artistsString += artist;  // Добавяме артиста към низа
+                                        updateArtistsDisplay();  // Актуализираме интерфейса
+                                    }
+                                    artistInput.value = "";  // Изчистваме полето за нов избор
+                                });
+
+                                // Обработчик за добавяне на артист при натискане на Enter
+                                artistInput.addEventListener("keydown", function (event) {
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();  // Предотвратяваме подаденото поведение (submit)
+                                        const artist = artistInput.value.trim();
+                                        if (artist && !artistsString.includes(artist)) {
+                                            if (artistsString !== "") {
+                                                artistsString += ",";  // Добавяме разделител ',' ако вече има артисти
+                                            }
+                                            artistsString += artist;
+                                            updateArtistsDisplay();  // Актуализираме интерфейса
+                                            artistInput.value = "";  // Изчистваме полето
+                                        }
+                                    }
+                                });
+
+                                // Функция за обновяване на списъка с избрани артисти в интерфейса и актуализиране на скритото поле
+                                function updateArtistsDisplay() {
+                                    selectedArtistsDiv.innerHTML = "";  // Изчистваме предишния списък с артисти
+
+                                    // Разделяме артисти низа на масив за показване в интерфейса
+                                    const artistArray = artistsString.split(",");
+                                    artistArray.forEach(artist => {
+                                        let span = document.createElement("span");
+                                        span.textContent = artist;
+                                        span.classList.add("artist-tag");
+
+                                        // Добавяме бутон за премахване на артиста от списъка
+                                        let removeBtn = document.createElement("button");
+                                        removeBtn.textContent = "x";
+                                        removeBtn.onclick = function () {
+                                            artistsString = artistsString.split(",").filter(a => a !== artist).join(",");  // Премахваме артиста
+                                            updateArtistsDisplay();  // Актуализираме интерфейса
+                                        };
+
+                                        span.appendChild(removeBtn);
+                                        selectedArtistsDiv.appendChild(span);
+                                    });
+                                    if (artistsString.trim() === "") {
+                                        selectedArtistsDiv.style.display = "none";  // Скриваме контейнера
+                                    } else {
+                                        selectedArtistsDiv.style.display = "block";  // Показваме контейнера, ако има артисти
+                                    }
+                                    // Записваме артисти в скритото поле (като един конкатениран низ)
+                                    artistsField.value = artistsString;  // Записваме всички артисти в скритото поле
+                                }
+                            });
+
+                        </script>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Price</label>
+                                <input th:field="*{price}" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Stock Quantity</label>
+                                <input th:field="*{quantity}" type="number" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Duration</label>
+                                <input th:field="*{duration}" type="text" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Total tracks</label>
+                                <input th:field="*{totalTracks}" type="number" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Genre</label>
+                                <select th:field="*{genre}" class="form-select" required>
+                                    <option th:each="genre : ${T(app.web.dto.enums.GenreRequest).values()}"
+                                            th:value="${genre}" th:text="${genre}">Select Genre
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Type</label>
+                                <select th:field="*{type}" class="form-select" required>
+                                    <option th:each="type : ${T(app.web.dto.enums.TypeRequest).values()}"
+                                            th:value="${type}" th:text="${type}">Select Type
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Format (Media Type)</label>
+                                <select th:field="*{format}" class="form-select" required>
+                                    <option th:each="format : ${T(app.web.dto.enums.FormatRequest).values()}"
+                                            th:value="${format}" th:text="${format}">Select Type
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Release Date</label>
+                                <input th:field="*{releaseDate}" type="date" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Album Cover</label>
+                                <input th:field="*{recordCover}" type="hidden" role="uploadcare-uploader"
+                                       name="record_image" id="record_image1"/>
+                                <!--                                <input type="file" class="form-control" accept="image/*" required>-->
+                            </div>
+                            <script>
+                                uploadcare.start({
+                                    publicKey: '0c784d99760e23804a0e'  // Замени с твоя публичен ключ
+                                });
+
+                                var widget = uploadcare.Widget('#record_image1');
+                                widget.on('change', function (fileInfo) {
+                                    if (fileInfo) {
+                                        // Тук можеш да изпратиш URL-то на каченото изображение
+                                        console.log('Файлът е качен! URL:', fileInfo.cdnUrl);
+                                        document.getElementById('record_image1').value = fileInfo.cdnUrl; // Това ще сложи URL-то в твоя input
+                                    }
+                                });
+                            </script>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Spotify Link</label>
+                                <input th:field="*{spotifyUrl}" type="text" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea th:field="*{description}" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-dark">Save Album</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

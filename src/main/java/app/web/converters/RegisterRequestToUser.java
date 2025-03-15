@@ -1,12 +1,9 @@
 package app.web.converters;
 
-import app.address.model.Address;
 import app.user.model.Role;
 import app.user.model.User;
 import app.web.dto.RegisterRequest;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
