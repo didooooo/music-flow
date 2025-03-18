@@ -2,7 +2,12 @@ package app.user.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
+import app.record.model.Record;
 import app.security.AuthUser;
+import app.shopping_cart.model.ShoppingCart;
+import app.shopping_cart.model.ShoppingCartInfo;
+import app.shopping_cart.service.ShoppingCartInfoService;
+import app.shopping_cart.service.ShoppingCartService;
 import app.user.model.User;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
@@ -24,21 +29,26 @@ public class UserService implements UserDetailsService {
     private final ConversionService conversionService;
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
+    private final ShoppingCartService shoppingCartService;
+    private final ShoppingCartInfoService shoppingCartInfoService;
 
-    public UserService(UserRepository userRepository, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService) {
+    public UserService(UserRepository userRepository, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService, ShoppingCartService shoppingCartService, ShoppingCartInfoService shoppingCartInfoService) {
         this.userRepository = userRepository;
         this.conversionService = conversionService;
         this.passwordEncoder = passwordEncoder;
         this.addressService = addressService;
+        this.shoppingCartService = shoppingCartService;
+        this.shoppingCartInfoService = shoppingCartInfoService;
     }
+
     @Transactional
     public User registerUser(RegisterRequest input) {
         Optional<User> userWithUsername = userRepository.findByUsername(input.getUsername());
-        if(userWithUsername.isPresent()) {
+        if (userWithUsername.isPresent()) {
             throw new RuntimeException("Username is already in use");
         }
         Optional<User> userWithEmail = userRepository.findByEmail(input.getEmail());
-        if(userWithEmail.isPresent()) {
+        if (userWithEmail.isPresent()) {
             throw new RuntimeException("Email is already in use");
         }
         Address address = addressService.save(input.getStreet(), input.getCity(), input.getState(), input.getZip());
@@ -51,16 +61,47 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(()-> new RuntimeException("There is no such user with [%s] ".formatted(userId)));
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("There is no such user with [%s] ".formatted(userId)));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("There is no such user with [%s] ".formatted(username)));
-        return new AuthUser(user.getId(),username,user.getPassword(),user.getRole(),user.isActive());
+        return new AuthUser(user.getId(), username, user.getPassword(), user.getRole(), user.isActive());
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public void addRecordToWishlist(UUID userId, Record record) {
+        User user = getById(userId);
+        for (Record r : user.getWishlist()) {
+            if (r.getId().equals(record.getId())) {
+                return;
+            }
+        }
+        user.getWishlist().add(record);
+        userRepository.save(user);
+    }
+    @Transactional
+    public void addRecordToCart(Record record, UUID userId) {
+        User user = getById(userId);
+        if (user.getShoppingCart() != null) {
+            for (ShoppingCartInfo product : user.getShoppingCart().getShoppingCartInfos()) {
+                if (product.getRecord().getId().equals(record.getId())) {
+                    product.setQuantity(product.getQuantity() + 1);
+                    user.getShoppingCart().setTotalPrice(user.getShoppingCart().getTotalPrice().add(record.getPrice()));
+                    user.getShoppingCart().setTotalQuantity(user.getShoppingCart().getTotalQuantity()+1);
+                    userRepository.save(user);
+                    return;
+                }
+            }
+        }else{
+            user.setShoppingCart(shoppingCartService.createShoppingCartForUser(user));
+        }
+
+        user.getShoppingCart().getShoppingCartInfos().add(shoppingCartInfoService.addNewProductInShoppingCart(record,user.getShoppingCart()));
+        userRepository.save(user);
     }
 }

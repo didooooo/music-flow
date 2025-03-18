@@ -61,7 +61,7 @@ public class AdminController {
     @GetMapping("/records")
     public ModelAndView getRecordPage(@RequestParam(defaultValue = "0",name = "page") int page) {
         ModelAndView modelAndView = new ModelAndView();
-        Page<Record> records = recordService.getEightRecords(PageRequest.of(page, 8));
+        Page<Record> records = recordService.getRecordsWithGivenSize(PageRequest.of(page, 8),null);
         modelAndView.setViewName("admin-products");
         List<Artist> artists = artistService.findAll();
         modelAndView.addObject("search", new SearchRecordByNameRequest());
