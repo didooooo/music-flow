@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +25,9 @@ public class ShoppingCart {
     private User user;
     @OneToMany
     private List<ShoppingCartInfo> shoppingCartInfos;
+    @Column(nullable = false)
+    private BigDecimal totalPrice;
+    private int totalQuantity;
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
