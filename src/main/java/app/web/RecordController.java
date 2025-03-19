@@ -141,5 +141,15 @@ public class RecordController {
         mav.addObject("recordsRequest", RecordUpsertRequest.builder().artists(artists).build());
         return mav;
     }
+    @GetMapping("/{id}")
+    public ModelAndView getRecordInfo(@PathVariable UUID id, @AuthenticationPrincipal AuthUser user) {
+        ModelAndView mav = new ModelAndView();
+        User userDB = userService.getById(user.getUserId());
+        Record record = recordService.findById(id);
+        mav.addObject("record", record);
+        mav.addObject("user", userDB);
+        mav.setViewName("product-info");
+        return mav;
+    }
 
 }

@@ -29,7 +29,7 @@ public class WishlistController {
         ModelAndView mav = new ModelAndView();
         Record record = recordService.findById(id);
         userService.addRecordToWishlist(authUser.getUserId(),record);
-        mav.setViewName("redirect:/records");
+        mav.setViewName("redirect:/records/all?sort=");
         return mav;
     }
 }
