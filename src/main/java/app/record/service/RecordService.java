@@ -7,6 +7,7 @@ import app.record.model.Genre;
 import app.record.model.Record;
 import app.record.model.Type;
 import app.record.repository.RecordRepository;
+import app.review.model.Review;
 import app.web.dto.RecordUpsertRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
@@ -158,5 +159,10 @@ public class RecordService {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
         }
         return spec;
+    }
+
+    public void addReviewToTheRecord(Record record,Review saved) {
+        record.getReviews().add(saved);
+        recordRepository.save(record);
     }
 }
