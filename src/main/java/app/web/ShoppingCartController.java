@@ -29,7 +29,7 @@ public class ShoppingCartController {
         ModelAndView mav = new ModelAndView();
         Record record = recordService.findById(id);
         userService.addRecordToCart(record,user.getUserId());
-        mav.setViewName("redirect:/records");
+        mav.setViewName("redirect:/records/all?sort=");
         return mav;
     }
 }

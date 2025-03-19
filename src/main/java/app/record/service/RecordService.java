@@ -46,7 +46,7 @@ public class RecordService {
             return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "price")));
         } else if (sort.equals("priceDesc")) {
             return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "price")));
-        } else if (sort.equals("newest")) {
+        } else if (sort.equals("releaseDate")) {
             return recordRepository.findAll( PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "releaseDate")));
         } else if (sort.equals("nameAsc")) {
             return recordRepository.findAll( PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "title")));
@@ -124,7 +124,7 @@ public class RecordService {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "price")));
         } else if (sort.equals("priceDesc")) {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "price")));
-        } else if (sort.equals("newest")) {
+        } else if (sort.equals("releaseDate")) {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "releaseDate")));
         } else if (sort.equals("nameAsc")) {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "title")));
