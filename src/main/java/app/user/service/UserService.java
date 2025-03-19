@@ -3,6 +3,7 @@ package app.user.service;
 import app.address.model.Address;
 import app.address.service.AddressService;
 import app.record.model.Record;
+import app.review.model.Review;
 import app.security.AuthUser;
 import app.shopping_cart.model.ShoppingCart;
 import app.shopping_cart.model.ShoppingCartInfo;
@@ -102,6 +103,11 @@ public class UserService implements UserDetailsService {
         }
 
         user.getShoppingCart().getShoppingCartInfos().add(shoppingCartInfoService.addNewProductInShoppingCart(record,user.getShoppingCart()));
+        userRepository.save(user);
+    }
+
+    public void addReviewToUserProfile(User user, Review saved) {
+        user.getReviews().add(saved);
         userRepository.save(user);
     }
 }

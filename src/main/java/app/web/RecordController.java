@@ -9,6 +9,7 @@ import app.security.AuthUser;
 import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.RecordUpsertRequest;
+import app.web.dto.ReviewRequest;
 import app.web.dto.SearchRecordByNameRequest;
 import jakarta.validation.Valid;
 import org.springframework.core.convert.ConversionService;
@@ -148,6 +149,7 @@ public class RecordController {
         Record record = recordService.findById(id);
         mav.addObject("record", record);
         mav.addObject("user", userDB);
+        mav.addObject("reviewRequest", ReviewRequest.builder().recordId(id).userId(user.getUserId()).build());
         mav.setViewName("product-info");
         return mav;
     }

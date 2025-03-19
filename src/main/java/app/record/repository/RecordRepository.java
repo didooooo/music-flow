@@ -22,4 +22,5 @@ public interface RecordRepository extends JpaRepository<Record, UUID> {
     Page<Record> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     Page<Record> findAll(Specification<Record> spec, Pageable pageable);
+
 }

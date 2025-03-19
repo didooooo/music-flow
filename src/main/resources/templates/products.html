@@ -161,7 +161,7 @@
                                         <div class="album-rating">
                                             <span th:if="${ratings.isEmpty() or ratings[stat.index]==0}">No reviews yet</span>
                                             <i th:if="${!ratings.isEmpty() and ratings[stat.index]!=0}"
-                                               th:each="star : ${ratings[stat.index]}" class="fas fa-star"></i>
+                                               th:each="star : ${#numbers.sequence(1, ratings[stat.index])}" class="fas fa-star"></i>
                                             <span th:text=" ${record.reviews}!=null ? '('+${record.reviews.size()+')'} : 0"
                                                   class="rating-count">(128)</span>
                                         </div>
