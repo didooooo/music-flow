@@ -89,7 +89,7 @@ public class RecordController {
             modelAndView.setViewName("redirect:/records/all?sort="+sort);
             return modelAndView;
         }
-        Page<Record> eightRecords = recordService.getEightRecordsWithFilterParameters(PageRequest.of(page, 1),sort,format,genre,media,maxPrice,minPrice);
+        Page<Record> eightRecords = recordService.getEightRecordsWithFilterParameters(PageRequest.of(page, 9),sort,format,genre,media,maxPrice,minPrice);
         List<Integer> ratingByGivenRecords = reviewService.getRatingByGivenRecords(eightRecords.getContent());
         User fromDB = userService.getById(user.getUserId());
         modelAndView.addObject("records", eightRecords);

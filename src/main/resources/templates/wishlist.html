@@ -28,98 +28,67 @@
 
     <section class="wishlist-section">
         <div class="container">
-            <div class="wishlist-header">
+            <div th:if="${records!=null} or ${!records.isEmpty()}" class="wishlist-header">
                 <h1 class="wishlist-title">My Wishlist</h1>
                 <p class="wishlist-subtitle">Your favorite albums in one place</p>
             </div>
 
-            <div class="wishlist-items">
+            <div th:if="${records!=null} or ${!records.isEmpty()}" class="wishlist-items">
                 <!-- Wishlist Item -->
-                <div class="wishlist-item">
+                <div th:each="record, stat : ${records}" class="wishlist-item">
                     <div class="album-image">
-                        <img src="https://media.istockphoto.com/id/1138179183/vector/no-image-available-sign.jpg?s=612x612&w=0&k=20&c=wJLkJNHgmT9v7bqmCs5uvLcRro437iyasa5RdgFGsoE=" alt="Album Cover">
+                        <img th:src="${record.image}" alt="Album Cover">
                     </div>
                     <div class="album-info">
-                        <h3 class="album-title">SOUR</h3>
-                        <div class="album-artist">Olivia Rodrigo</div>
+                        <h3 class="album-title" th:text="${record.title}">SOUR</h3>
+                        <div class="album-artist"> <a th:each="artist : ${record.artists}"
+                                                      th:href="@{'/'+${artist.id}}"
+                                                      th:text="${artist.name}"
+                                                      style="margin-right: 10px; text-decoration: none; color: black">
+                        </a></div>
                         <div class="album-meta">
                             <div class="meta-item">
                                 <i class="fas fa-music"></i>
-                                <span>11 tracks</span>
+                                <span th:text="${record.totalTracks}">11 tracks</span>
                             </div>
                             <div class="meta-item">
                                 <i class="fas fa-clock"></i>
-                                <span>34 minutes</span>
+                                <span th:text="${record.duration}">34 minutes</span>
                             </div>
                             <div class="meta-item">
                                 <i class="fas fa-star"></i>
-                                <span>4.8/5</span>
+                                <span th:text="${ratings[stat.index]+'/5'}" >4.8/5</span>
                             </div>
                         </div>
-                        <div class="album-price">$19.99</div>
+                        <div class="album-price" th:text="'$'+${record.price}">$19.99</div>
                         <div class="action-buttons">
-                            <button class="btn btn-primary btn-action">
-                                <i class="fas fa-shopping-cart"></i>
-                                Add to Cart
-                            </button>
-                            <button class="btn btn-outline btn-action">
+                            <form th:action="@{'/shopping-cart/' + ${record.id}}" th:method="POST">
+                                <button class="btn btn-primary btn-action">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    Add to Cart
+                                </button>
+                            </form>
+                            <a th:href="@{/records/{id}(id=${record.id})}"
+                               class="btn btn-outline btn-action">
                                 <i class="fas fa-play"></i>
                                 Preview
-                            </button>
+                            </a>
                         </div>
                     </div>
+                    <form th:action="@{'/wishlist/' + ${record.id}}" th:method="DELETE">
                     <button class="remove-btn">
                         <i class="fas fa-times"></i>
                     </button>
+                    </form>
                 </div>
-
-                <div class="wishlist-item">
-                    <div class="album-image">
-                        <img src="../images/youBrokeMeFirst.jpg" alt="Album Cover">
-                    </div>
-                    <div class="album-info">
-                        <h3 class="album-title">SOUR</h3>
-                        <div class="album-artist">Olivia Rodrigo</div>
-                        <div class="album-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-music"></i>
-                                <span>11 tracks</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                <span>34 minutes</span>
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-star"></i>
-                                <span>4.8/5</span>
-                            </div>
-                        </div>
-                        <div class="album-price">$19.99</div>
-                        <div class="action-buttons">
-                            <button class="btn btn-primary btn-action">
-                                <i class="fas fa-shopping-cart"></i>
-                                Add to Cart
-                            </button>
-                            <button class="btn btn-outline btn-action">
-                                <i class="fas fa-play"></i>
-                                Preview
-                            </button>
-                        </div>
-                    </div>
-                    <button class="remove-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-
-                <!-- Add more wishlist items as needed -->
             </div>
 
             <!-- Empty State -->
-            <div class="empty-wishlist" style="display: none;">
+            <div th:if="${records==null} or ${records.isEmpty()}" class="empty-wishlist" style="display: none;">
                 <i class="far fa-heart empty-icon"></i>
                 <h2 class="empty-title">Your wishlist is empty</h2>
                 <p class="empty-text">Start adding your favorite albums to create your perfect collection!</p>
-                <a href="../all_stocks.html" class="browse-btn">
+                <a href="/records/all" class="browse-btn">
                     <i class="fas fa-music"></i>
                     Browse Albums
                 </a>

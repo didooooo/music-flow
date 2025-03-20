@@ -111,7 +111,7 @@
                                     </option>
                                     <option value="nameDesc" th:selected="${sort == 'nameDesc'}">Title: Z to A
                                     </option>
-                                    <option value="releaseDate" th:selected="${sort == 'newest'}">Newest
+                                    <option value="releaseDate" th:selected="${sort == 'releaseDate'}">Newest
                                         Arrivals
                                     </option>
                                 </select>
@@ -205,18 +205,18 @@
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:if="${records.hasPrevious()}">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${records.number - 1},sort=${sort}, format=${selectedFormats}, type=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
+                               th:href="@{/records/filter(page=${records.number - 1},sort=${sort}, format=${selectedFormats}, media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
                                     class="fas fa-chevron-left"></i></a>
                         </li>
                         <li class="page-item" th:each="page : ${#numbers.sequence(0, records.totalPages - 1)}"
                             th:classappend="${page == records.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${page} ,sort=${sort}, format=${selectedFormats} , type=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"
+                               th:href="@{/records/filter(page=${page} ,sort=${sort}, format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"
                                th:text="${page + 1}"></a>
                         </li>
                         <li class="page-item" th:if="${records.hasNext()}">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${records.number + 1},sort=${sort} , format=${selectedFormats} , type=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
+                               th:href="@{/records/filter(page=${records.number + 1},sort=${sort} , format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
                                     class="fas fa-chevron-right"></i></a>
                         </li>
                     </ul>

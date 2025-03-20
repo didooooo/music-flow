@@ -42,7 +42,7 @@
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="./user_area/wishlist.html">
+                    <a class="nav-link" href="/wishlist">
                                 <span class="cart-icon">
                                     <i class="fa-regular fa-heart"></i>
                                     <!-- <span class="cart-badge">1</span> -->
@@ -50,7 +50,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./shopping_cart.html">
+                    <a class="nav-link" href="/shopping-cart">
                                 <span class="cart-icon">
                                     <i class="fa-solid fa-cart-shopping"></i>
                                     <span th:text="${user != null and user.getShoppingCart() !=null ? user.getShoppingCart().getTotalQuantity() : 0}" class="cart-badge">1</span>
@@ -58,7 +58,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a th:text="${user != null and user.getShoppingCart() !=null ? '$'+user.getShoppingCart().getTotalPrice() : '$0'}" class="nav-link" href="#">$100.00</a>
+                    <a th:text="${user != null and user.getShoppingCart() !=null ? '$'+user.getShoppingCart().getTotalPrice() : '$0'}" class="nav-link" href="/shopping-cart">$100.00</a>
                 </li>
             </ul>
         </div>

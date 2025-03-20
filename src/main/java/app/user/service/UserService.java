@@ -110,4 +110,19 @@ public class UserService implements UserDetailsService {
         user.getReviews().add(saved);
         userRepository.save(user);
     }
+
+    public List<ShoppingCartInfo> getShoppingCartRecords(UUID userId) {
+        User user = getById(userId);
+        return user.getShoppingCart().getShoppingCartInfos();
+    }
+
+    public void removeFromWishlist(User user, Record record) {
+        for (Record r : user.getWishlist()) {
+            if (r.getId().equals(record.getId())) {
+                user.getWishlist().remove(r);
+                userRepository.save(user);
+                return;
+            }
+        }
+    }
 }

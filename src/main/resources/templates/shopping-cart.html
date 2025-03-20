@@ -41,36 +41,51 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr class="cart-item">
+                            <tr th:each="record : ${records}" class="cart-item">
                                 <td class="product-image">
                                     <div class="img-wrapper">
-                                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2EvLEYyPFrgAwOtwNcgWDDbPfBhfoL6-vzQ&s"
+                                        <img th:src="${record.record.image}"
                                              alt="Album cover"
                                              class="cart-img">
                                     </div>
                                 </td>
                                 <td class="product-title">
-                                    <h6 class="mb-1">Album Name</h6>
-                                    <small class="text-muted">Artist Name</small>
+                                    <h6 class="mb-1" th:text="${record.record.title}">Album Name</h6>
+                                    <small class="text-muted">
+                                        <a th:each="artist : ${record.record.artists}"
+                                           th:href="@{'/'+${artist.id}}"
+                                           th:text="${artist.name}"
+                                           style="margin-right: 10px; text-decoration: none; color: black">
+                                        </a>
+                                    </small>
                                 </td>
                                 <td class="product-quantity">
                                     <div class="quantity-control">
-                                        <button type="button" class="quantity-btn minus">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input type="number" name="quantity" class="quantity-input" value="1" min="1" max="10">
-                                        <button type="button" class="quantity-btn plus">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
+                                        <form></form>
+                                        <form th:method="PUT"
+                                              th:action="@{'/shopping-cart/minus/'+${record.record.id}}">
+                                            <button type="submit" class="quantity-btn minus">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </form>
+                                        <input readonly type="number" th:value="${record.quantity}" name="quantity"
+                                               class="quantity-input">
+                                        <form th:method="PUT" th:action="@{'/shopping-cart/plus/'+${record.record.id}}">
+                                            <button type="submit" class="quantity-btn plus">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                                 <td class="product-price">
-                                    <span class="price">$19.99</span>
+                                    <span class="price" th:text="'$'+${record.record.price}">$19.99</span>
                                 </td>
                                 <td class="product-remove">
-                                    <button type="button" class="btn btn-remove">
+                                    <form th:method="DELETE" th:action="@{'/shopping-cart/'+${record.record.id}}">
+                                    <button type="submit" class="btn btn-remove">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
+                                    </form>
                                 </td>
                             </tr>
                             <!-- Repeat for other items -->
@@ -87,16 +102,23 @@
                 <div class="summary-details">
                     <div class="summary-item d-flex justify-content-between mb-2">
                         <span>Subtotal</span>
-                        <span>$19.99</span>
+                        <span th:text="${user.getShoppingCart().getTotalPrice()}">$19.99</span>
                     </div>
-                    <div class="summary-item d-flex justify-content-between mb-2">
+                    <div th:if="${user.getShoppingCart().getTotalPrice()!=0}"
+                         class="summary-item d-flex justify-content-between mb-2">
                         <span>Shipping</span>
-                        <span>Free</span>
+                        <span th:if="${user.getShoppingCart().getTotalPrice()>=100}">Free</span>
+                        <span th:if="${user.getShoppingCart().getTotalPrice()<100}">$2.59</span>
                     </div>
                     <hr>
                     <div class="summary-item d-flex justify-content-between mb-3">
                         <span class="fw-bold">Total</span>
-                        <span class="total-price">$19.99</span>
+                        <span class="total-price"
+                              th:if="${user.getShoppingCart().getTotalPrice()>=100} or  ${user.getShoppingCart().getTotalPrice()==0}"
+                              th:text="${user.getShoppingCart().getTotalPrice()}">$19.99</span>
+                        <span class="total-price"
+                              th:if="${user.getShoppingCart().getTotalPrice()<100} and ${user.getShoppingCart().getTotalPrice()!=0}"
+                              th:text="${user.getShoppingCart().getTotalPrice()+2.59}">$19.99</span>
                     </div>
                     <div class="summary-buttons">
                         <a href="user_area/make_order.html" class="btn gradient w-100 mb-2">
