@@ -20,6 +20,7 @@ import java.util.UUID;
 @Repository
 public interface RecordRepository extends JpaRepository<Record, UUID> {
     Page<Record> findAllByTitleContainingIgnoreCase(String title, Pageable pageable);
+    List<Record> findTop4ByOrderByReleaseDateDesc();
 
     Page<Record> findAll(Specification<Record> spec, Pageable pageable);
 

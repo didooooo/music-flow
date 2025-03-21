@@ -2,6 +2,7 @@ package app.user.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
+import app.order.model.Order;
 import app.record.model.Record;
 import app.review.model.Review;
 import app.security.AuthUser;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -124,5 +126,16 @@ public class UserService implements UserDetailsService {
                 return;
             }
         }
+    }
+
+    public void addOrderToUserOrders(Order saved, User fromDB) {
+        fromDB.getOrders().add(saved);
+        userRepository.save(fromDB);
+    }
+    public void clearShoppingCart(User fromDB) {
+        fromDB.getShoppingCart().getShoppingCartInfos().clear();
+        fromDB.getShoppingCart().setTotalQuantity(0);
+        fromDB.getShoppingCart().setTotalPrice(BigDecimal.ZERO);
+        userRepository.save(fromDB);
     }
 }

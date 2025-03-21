@@ -35,7 +35,7 @@ public class Order {
     private String phone;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<OrderInfo> orderInfos;
     @ManyToOne
     private Shipment shipment;

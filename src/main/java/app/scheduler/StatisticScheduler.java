@@ -51,12 +51,13 @@ public class StatisticScheduler {
         int totalRecords = recordList.size();
         BigDecimal totalPrice = new BigDecimal(0);
         for (Order order : orders) {
-            for (OrderInfo product : order.getOrderInfos()) {
-                int quantity = product.getQuantity();
-                BigDecimal price = product.getRecord().getPrice();
-                price = price.multiply(new BigDecimal(quantity));
-                totalPrice = totalPrice.add(price);
-            }
+            totalPrice = order.getTotalPrice();
+//            for (OrderInfo product : order.getOrderInfos()) {
+//                int quantity = product.getQuantity();
+//                BigDecimal price = product.getRecord().getPrice();
+//                price = price.multiply(new BigDecimal(quantity));
+//                totalPrice = totalPrice.add(price);
+//            }
         }
         Statistics statistics = Statistics.builder()
                 .activeUsers(totalActiveUsers)

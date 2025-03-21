@@ -2,6 +2,8 @@ package app.web;
 
 import app.order.model.Order;
 import app.order.service.OrderService;
+import app.record.model.Record;
+import app.record.service.RecordService;
 import app.security.AuthUser;
 import app.statistics.model.Statistics;
 import app.statistics.service.StatisticService;
@@ -27,16 +29,20 @@ public class IndexController {
     private final UserService userService;
     private final StatisticService statisticService;
     private final OrderService orderService;
+    private final RecordService recordService;
 
-    public IndexController(UserService userService, StatisticService statisticService, OrderService orderService) {
+    public IndexController(UserService userService, StatisticService statisticService, OrderService orderService, RecordService recordService) {
         this.userService = userService;
         this.statisticService = statisticService;
         this.orderService = orderService;
+        this.recordService = recordService;
     }
 
     @GetMapping("/")
-    public String getIndexPage() {
-        return "index";
+    public ModelAndView getIndexPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("index");
+        return modelAndView;
     }
 
     @GetMapping("/login")
@@ -74,11 +80,10 @@ public class IndexController {
 
     @GetMapping("/home")
     public ModelAndView getHomePage(@AuthenticationPrincipal AuthUser authUser) {
-
         User user = userService.getById(authUser.getUserId());
-
         ModelAndView modelAndView = new ModelAndView();
-
+        List<Record> newestRecords = recordService.getNewestRecords();
+        modelAndView.addObject("records", newestRecords);
         modelAndView.setViewName("index");
         modelAndView.addObject("user", user);
 

@@ -74,7 +74,7 @@
                 <i class="fas fa-dollar-sign"></i>
             </div>
             <div class="stat-info">
-                <h3 th:text="${statistic.getTotalMoney()}">$32,580</h3>
+                <h3 th:text="'$'+${statistic.getTotalMoney()}">$32,580</h3>
                 <p>Total Revenue</p>
             </div>
         </div>
@@ -99,11 +99,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="order : ${orders}">
-                    <td th:text="${order.id}">#ORD-001</td>
-                    <td th:text="${order.firstName} + ${order.lastName}">John Doe</td>
-                    <td th:text="${order.getOrderInfos().getFirst()+'...'}">SOUR - Olivia Rodrigo</td>
-                    <td th:text="${order.totalPrice}">$19.99</td>
+                <tr th:each="order, stat : ${orders}">
+                    <td th:text="'#ORD - '+${stat.index+1}">#ORD-001</td>
+                    <td th:text="${order.firstName} + ' '+ ${order.lastName}">John Doe</td>
+                    <td th:text="${order.getOrderInfos().getFirst().record.title+' ...'}">SOUR - Olivia Rodrigo</td>
+                    <td th:text="'$'+${order.totalPrice}">$19.99</td>
                     <td>
                         <span th:if="${order.status.name() == 'COMPLETED' or order.status.name() == 'SHIPPED'}" th:text="${order.status.name()}" class="status-badge status-completed">Completed</span>
                         <span th:if="${order.status.name() == 'PENDING'}" class="status-badge status-pending">Pending</span>
