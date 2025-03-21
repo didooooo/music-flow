@@ -33,15 +33,13 @@
                 </div>
                 <div class="step active">
                     <div class="step-number">2</div>
-                    <div class="step-label">Payment</div>
+                    <div class="step-label">Preview</div>
                 </div>
                 <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-label">Review</div>
+                    <div class="step-number active">3</div>
+                    <div class="step-label">Payment</div>
                 </div>
             </div>
-
-
 
 
             <!-- Payment Method Selection with Dynamic Forms -->
@@ -94,118 +92,126 @@
                 <!-- Dynamic Payment Forms -->
                 <div class="payment-forms">
                     <!-- Credit Card Form -->
-                    <div id="credit-card-form" class="payment-form">
-                        <div class="form-group">
-                            <label class="form-label">Card Holder Name</label>
-                            <input type="text" class="form-control" placeholder="Enter your full name">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Card Number</label>
-                            <input type="text" class="form-control card-number-input"
-                                   placeholder="1234 5678 9012 3456" maxlength="19">
-                            <i class="fas fa-credit-card card-icon"></i>
-                        </div>
-
-                        <div class="expiry-cvv">
+                    <form th:action="@{'/orders/'+${order.id}+'/payment'}" th:method="POST" th:object="${creditCard}">
+                        <div id="credit-card-form" class="payment-form">
                             <div class="form-group">
-                                <label class="form-label">Expiry Date</label>
-                                <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                                <label class="form-label">Card Holder Name</label>
+                                <input th:field="*{cardHolderName}" type="text" class="form-control"
+                                       placeholder="Enter your full name">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">CVV</label>
-                                <input type="password" class="form-control" placeholder="123" maxlength="3">
-                                <i class="fas fa-lock card-icon"></i>
+                                <label class="form-label">Card Number</label>
+                                <input th:field="*{cardNumber}" type="text" class="form-control card-number-input"
+                                       placeholder="1234 5678 9012 3456" maxlength="19">
+                                <i class="fas fa-credit-card card-icon"></i>
                             </div>
-                        </div>
-                        <button type="submit" class="checkout-btn">
-                            Pay Now - $99.99
-                        </button>
-                    </div>
 
+                            <div class="expiry-cvv">
+                                <div class="form-group">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input th:field="*{expiryDate}" type="text" class="form-control" placeholder="MM/YY"
+                                           maxlength="5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">CVV</label>
+                                    <input type="password" class="form-control" placeholder="123" maxlength="3">
+                                    <i class="fas fa-lock card-icon"></i>
+                                </div>
+                            </div>
+                            <button th:text="'Pay Now - $'+${order.totalPrice}" type="submit" class="checkout-btn">
+                                Pay Now - $99.99
+                            </button>
+                        </div>
+                    </form>
                     <!-- PayPal Form -->
-                    <div id="paypal-form" class="payment-form" style="display: none;">
-                        <div class="text-center mb-4">
-                            <img src="/images/paypal-logo.jpg" alt="PayPal" style="max-width: 200px;">
+                    <form th:action="@{'/orders/'+${order.id}+'/payment'}" th:method="POST" th:object="${paypal}">
+                        <div id="paypal-form" class="payment-form" style="display: none;">
+                            <div class="text-center mb-4">
+                                <img src="/images/paypal-logo.jpg" alt="PayPal" style="max-width: 200px;">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">PayPal Email</label>
+                                <input th:field="*{paypalEmail}" type="email" class="form-control"
+                                       placeholder="Enter your PayPal email">
+                            </div>
+                            <button th:text="'Pay Now - $'+${order.totalPrice}" type="submit" class="checkout-btn">
+                                Pay Now - $99.99
+                            </button>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">PayPal Email</label>
-                            <input type="email" class="form-control" placeholder="Enter your PayPal email">
-                        </div>
-                        <button type="submit" class="checkout-btn">
-                            Pay Now - $99.99
-                        </button>
-                    </div>
+                    </form>
 
                     <!-- Bank Transfer Form -->
-                    <div id="bank-transfer-form" class="payment-form" style="display: none;">
-                        <div class="bank-details">
-                            <div class="text-center mb-4">
-                                <div class="bank-icon-wrapper">
-                                    <i class="fas fa-university fa-3x gradient-text"></i>
+                    <form th:action="@{'/orders/'+${order.id}+'/payment'}" th:method="POST" th:object="${bankTransfer}">
+                        <div id="bank-transfer-form" class="payment-form" style="display: none;">
+                            <div class="bank-details">
+                                <div class="text-center mb-4">
+                                    <div class="bank-icon-wrapper">
+                                        <i class="fas fa-university fa-3x gradient-text"></i>
+                                    </div>
+                                    <h4 class="mt-3">Bank Transfer Details</h4>
+                                    <!-- <p class="text-muted">Please transfer the exact amount to the following account</p> -->
                                 </div>
-                                <h4 class="mt-3">Bank Transfer Details</h4>
-                                <!-- <p class="text-muted">Please transfer the exact amount to the following account</p> -->
-                            </div>
 
-                            <div class="bank-info">
-                                <div class="info-card mb-4">
-                                    <div class="amount-display text-center p-4 mb-4">
-                                        <span class="amount-label">Amount to Pay</span>
-                                        <h2 class="gradient-text mb-0">$99.99</h2>
-                                    </div>
+                                <div class="bank-info">
+                                    <div class="info-card mb-4">
+                                        <div class="amount-display text-center p-4 mb-4">
+                                            <span class="amount-label">Amount to Pay</span>
+                                            <h2 class="gradient-text mb-0" th:text="'$'+${order.totalPrice}">$99.99</h2>
+                                        </div>
 
-                                    <div class="form-group mb-3">
-                                        <label for="bankName" class="form-label">
-                                            <i class="fas fa-landmark me-2"></i>Bank Name
-                                        </label>
-                                        <input type="text" id="bankName" class="form-control form-control-lg"
-                                               value="SoundVibe International Bank" readonly>
-                                    </div>
+                                        <div class="form-group mb-3">
+                                            <label for="bankName" class="form-label">
+                                                <i class="fas fa-landmark me-2"></i>Bank Name
+                                            </label>
+                                            <input th:field="*{bankName}" type="text" id="bankName" class="form-control form-control-lg"
+                                                   value="SoundVibe International Bank" >
+                                        </div>
 
-                                    <div class="form-group mb-3">
-                                        <label for="accountName" class="form-label">
-                                            <i class="fas fa-user me-2"></i>Account Name
-                                        </label>
-                                        <input type="text" id="accountName" class="form-control form-control-lg"
-                                               value="SoundVibe Store Ltd." readonly>
-                                    </div>
+                                        <div class="form-group mb-3">
+                                            <label for="accountName" class="form-label">
+                                                <i class="fas fa-user me-2"></i>Account Name
+                                            </label>
+                                            <input th:field="*{accountHolderName}" type="text" id="accountName" class="form-control form-control-lg"
+                                                   value="SoundVibe Store Ltd." >
+                                        </div>
 
-                                    <div class="form-group mb-3">
-                                        <label for="iban" class="form-label">
-                                            <i class="fas fa-credit-card me-2"></i>IBAN
-                                        </label>
-                                        <div class="input-group">
-                                            <input type="text" id="iban" class="form-control form-control-lg"
-                                                   value="BG29 NWBK 6016 1331 9268 19" readonly>
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                    onclick="copyToClipboard('iban')">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
+                                        <div class="form-group mb-3">
+                                            <label for="iban" class="form-label">
+                                                <i class="fas fa-credit-card me-2"></i>IBAN
+                                            </label>
+                                            <div class="input-group">
+                                                <input th:field="*{iban}" type="text" id="iban" class="form-control form-control-lg"
+                                                       value="BG29 NWBK 6016 1331 9268 19" >
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        onclick="copyToClipboard('iban')">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group mb-4">
+                                            <label for="bic" class="form-label">
+                                                <i class="fas fa-globe me-2"></i>BIC/Swift
+                                            </label>
+                                            <div class="input-group">
+                                                <input th:field="*{bic}" type="text" id="bic" class="form-control form-control-lg"
+                                                       value="NWBKGB2L" >
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                        onclick="copyToClipboard('bic')">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="form-group mb-4">
-                                        <label for="bic" class="form-label">
-                                            <i class="fas fa-globe me-2"></i>BIC/Swift
-                                        </label>
-                                        <div class="input-group">
-                                            <input type="text" id="bic" class="form-control form-control-lg"
-                                                   value="NWBKGB2L" readonly>
-                                            <button class="btn btn-outline-secondary" type="button"
-                                                    onclick="copyToClipboard('bic')">
-                                                <i class="fas fa-copy"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <button type="submit" class="checkout-btn mt-4">
+                                        <i class="fas fa-check-circle me-2"></i>Confirm Transfer
+                                    </button>
                                 </div>
-                                <button type="submit" class="checkout-btn mt-4">
-                                    <i class="fas fa-check-circle me-2"></i>Confirm Transfer
-                                </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

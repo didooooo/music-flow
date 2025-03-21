@@ -26,107 +26,52 @@
 
     <!-- Hero Section -->
     <div class="hero-section text-center">
-        <h1 class="display-4 fw-bold">SoundVibe Store</h1>
+        <h1 class="display-4 fw-bold">Music Flow Store</h1>
         <p class="lead">Feel the Beat, Own the Music</p>
-        <a href="#products" class="btn btn-light btn-lg">Shop Now</a>
+        <a href="/records/all" class="btn btn-light btn-lg">Shop Now</a>
     </div>
 
     <!-- Products Section -->
     <div class="row mx-0" id="products">
         <div class="col-md-1 bg-light"></div>
         <div class="col-md-10">
-            <h2 class="text-center mb-4">Featured Products</h2>
+            <h2 class="text-center mb-4">Newest Products</h2>
             <div class="row g-4">
                 <!-- Product Card Template -->
-                <div class="col-md-4 col-lg-3">
+                <div th:each="record : ${records}" class="col-md-4 col-lg-3">
                     <div class="card h-100">
                         <div class="position-relative">
-                            <img src="images/sour.jpg" class="card-img-top" alt="Album">
-                            <span class="position-absolute top-0 end-0 badge bg-danger m-2">Sale!</span>
+                            <img th:src="${record.image}" class="card-img-top" alt="Album">
+                            <span class="position-absolute top-0 end-0 badge bg-danger m-2">NEW!</span>
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Album Title</h5>
-                            <p class="card-text artist-name">Artist Name</p>
+                            <h5 class="card-title" th:text="${record.title}">Album Title</h5>
+                            <p class="card-text artist-name">
+                                <a th:each="artist : ${record.artists}"
+                                   th:href="@{'/'+${artist.id}}"
+                                   th:text="${artist.name}"
+                                   style="margin-right: 10px; text-decoration: none; color: black">
+                                </a>
+                            </p>
                             <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 mb-0">$599.99</span>
+                                <span class="h5 mb-0" th:text="'$'+${record.price}">$599.99</span>
                                 <div>
-                                    <a href="#" class="btn gradient text-light btn-sm m-1"><i class="fas fa-cart-plus"></i> Add
-                                        to Cart</a>
-                                    <a href="./view_more.html" class="btn btn-secondary btn-sm mx-1"><i class="fas fa-eye"></i>
-                                        Details</a>
+                                    <form th:action="@{'/shopping-cart/' + ${record.id}}" th:method="POST">
+                                        <button class="btn gradient text-light btn-sm m-1">
+                                            <i class="fas fa-cart-plus"></i>
+                                            Add to Cart
+                                        </button>
+                                    </form>
+                                    <a th:href="@{/records/{id}(id=${record.id})}"
+                                       class="btn btn-secondary btn-sm mx-1">
+                                        <i class="fas fa-eye"></i>
+                                        Preview
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Repeat product cards  -->
-
-                <div class="col-md-4 col-lg-3">
-                    <div class="card h-100">
-                        <div class="position-relative">
-                            <img src="images/images.jpg" class="card-img-top" alt="Album">
-                            <span class="position-absolute top-0 end-0 badge bg-danger m-2">Sale!</span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Album Title</h5>
-                            <p class="card-text artist-name">Artist Name</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 mb-0">$599.99</span>
-                                <div>
-                                    <a href="#" class="btn gradient text-light btn-sm m-1"><i class="fas fa-cart-plus"></i> Add
-                                        to Cart</a>
-                                    <a href="#" class="btn btn-secondary btn-sm mx-1"><i class="fas fa-eye"></i>
-                                        Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-lg-3">
-                    <div class="card h-100">
-                        <div class="position-relative">
-                            <img src="images/youBrokeMeFirst.jpg" class="card-img-top" alt="Album">
-                            <span class="position-absolute top-0 end-0 badge bg-danger m-2">Sale!</span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Album Title</h5>
-                            <p class="card-text artist-name">Artist Name</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 mb-0">$599.99</span>
-                                <div>
-                                    <a href="#" class="btn gradient text-light btn-sm m-1"><i class="fas fa-cart-plus"></i> Add
-                                        to Cart</a>
-                                    <a href="#" class="btn btn-secondary btn-sm mx-1"><i class="fas fa-eye"></i>
-                                        Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-lg-3">
-                    <div class="card h-100">
-                        <div class="position-relative">
-                            <img src="images/guts.jpg" class="card-img-top" alt="Album">
-                            <span class="position-absolute top-0 end-0 badge bg-danger m-2">Sale!</span>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">Album Title</h5>
-                            <p class="card-text artist-name">Artist Name</p>
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <span class="h5 mb-0">$599.99</span>
-                                <div>
-                                    <a href="#" class="btn gradient text-light btn-sm m-1"><i class="fas fa-cart-plus"></i> Add
-                                        to Cart</a>
-                                    <a href="#" class="btn btn-secondary btn-sm mx-1"><i class="fas fa-eye"></i>
-                                        Details</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
         </div>
         <div class="col-md-1 bg-light"></div>

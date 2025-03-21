@@ -165,4 +165,7 @@ public class RecordService {
         record.getReviews().add(saved);
         recordRepository.save(record);
     }
+    public List<Record> getNewestRecords(){
+        return recordRepository.findTop4ByOrderByReleaseDateDesc();
+    }
 }

@@ -30,11 +30,14 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/{id}")
-    public ModelAndView addToCart(@PathVariable UUID id, @AuthenticationPrincipal AuthUser user) {
+    public ModelAndView addToCart(@PathVariable UUID id,
+                                  @AuthenticationPrincipal AuthUser user,
+                                  @RequestHeader(value = "Referer", required = false) String referer) {
         ModelAndView mav = new ModelAndView();
         Record record = recordService.findById(id);
         userService.addRecordToCart(record, user.getUserId());
-        mav.setViewName("redirect:/records/all?sort=");
+//        mav.setViewName("redirect:/records/all?sort=");
+        mav.setViewName("redirect:" + (referer != null ? referer : "/records/all?sort="));
         return mav;
     }
 

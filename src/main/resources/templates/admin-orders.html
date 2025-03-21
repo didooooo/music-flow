@@ -135,13 +135,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="order : ${orders.content}">
-                    <td th:text="${order.id}"></td>
+                <tr th:each="order, stat : ${orders.content}">
+                    <td th:text="'#ORD - '+${stat.index+1}"></td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <img th:src="${#strings.isEmpty(order.getUser().profilePicture) ? 'https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png' : user.profilePicture}"
+                            <img th:src="${#strings.isEmpty(order.getUser().profilePicture) ? 'https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png' : order.getUser().profilePicture}"
                                  alt="User" class="rounded-circle me-2"
-                                 style="width: 20%; height: 20%;">
+                                 style="width: 70px; height: 70px;">
                             <div>
                                 <div th:text="${order.getUser().username}" class="fw-bold">Olivia Rodrigo</div>
                                 <small th:text="${order.getUser().email}" class="text-muted">olivia@example.com</small>
@@ -149,8 +149,8 @@
                         </div>
                     </td>
                     <td>
-                        <div th:text="${order.products.getFirst()+'...'}">SOUR - Olivia Rodrigo</div>
-                        <small th:text="${order.getOrderInfos().size()+' items'}" class="text-muted">2 items</small>
+                        <div th:text="${order.getOrderInfos().getFirst().record.title+' ...'}">SOUR - Olivia Rodrigo</div>
+                        <small th:text="${order.getOrderInfos().size()+'  items'}" class="text-muted">2 items</small>
                     </td>
                     <td th:text="'$'+${order.getTotalPrice()}">$39.98</td>
                     <td>
