@@ -10,6 +10,8 @@ import app.shopping_cart.model.ShoppingCart;
 import app.shopping_cart.model.ShoppingCartInfo;
 import app.shopping_cart.service.ShoppingCartInfoService;
 import app.shopping_cart.service.ShoppingCartService;
+import app.statistics.model.Statistics;
+import app.statistics.service.StatisticService;
 import app.user.model.User;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
@@ -29,14 +31,16 @@ import java.util.UUID;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final StatisticService statisticService;
     private final ConversionService conversionService;
     private final PasswordEncoder passwordEncoder;
     private final AddressService addressService;
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartInfoService shoppingCartInfoService;
 
-    public UserService(UserRepository userRepository, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService, ShoppingCartService shoppingCartService, ShoppingCartInfoService shoppingCartInfoService) {
+    public UserService(UserRepository userRepository, StatisticService statisticService, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService, ShoppingCartService shoppingCartService, ShoppingCartInfoService shoppingCartInfoService) {
         this.userRepository = userRepository;
+        this.statisticService = statisticService;
         this.conversionService = conversionService;
         this.passwordEncoder = passwordEncoder;
         this.addressService = addressService;
@@ -60,7 +64,12 @@ public class UserService implements UserDetailsService {
                 .password(passwordEncoder.encode(input.getPassword()))
                 .address(address)
                 .build();
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setActiveUsers(statisticsForToday.getActiveUsers() + 1);
+        statisticsForToday.setTotalCustomers(statisticsForToday.getTotalCustomers() + 1);
+        statisticService.save(statisticsForToday);
+        return saved;
     }
 
     public User getById(UUID userId) {

@@ -1,6 +1,7 @@
 package app.web;
 
 import app.order.model.Order;
+import app.order.model.OrderInfo;
 import app.order.service.OrderService;
 import app.security.AuthUser;
 import app.user.model.User;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import app.web.dto.PaymentBankTransferRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +67,7 @@ public class OrdersController {
     public ModelAndView makeOrder(@AuthenticationPrincipal AuthUser authUser, OrderShippingRequest shippingRequest) {
         ModelAndView mav = new ModelAndView();
         User fromDB = userService.getById(authUser.getUserId());
-        Order order = orderService.updateDataOfExistingOrder(shippingRequest.getOrderId(),shippingRequest);
+        Order order = orderService.updateDataOfExistingOrder(shippingRequest.getOrderId(), shippingRequest);
         if (order == null) {
             order = orderService.createNewOrder(shippingRequest, fromDB);
         }
@@ -88,13 +90,11 @@ public class OrdersController {
     }
 
     @PostMapping("/{id}/payment")
-    public ModelAndView addPaymentToOrder(@AuthenticationPrincipal AuthUser authUser,
-                                          @PathVariable UUID id,
+    public ModelAndView addPaymentToOrder(@PathVariable UUID id,
                                           PaymentBankTransferRequest paymentBankTransferRequest,
                                           PaymentCreditCardRequest paymentCreditCardRequest,
                                           PaymentPayPalRequest payPalRequest) {
         ModelAndView mav = new ModelAndView();
-//        User user = userService.getById(authUser.getUserId());
         orderService.makeOrder(id, paymentBankTransferRequest, paymentCreditCardRequest, payPalRequest);
         mav.setViewName("redirect:/home");
         return mav;
@@ -119,6 +119,17 @@ public class OrdersController {
         mav.setViewName("pending-orders");
         mav.addObject("user", user);
         mav.addObject("orders", orderList);
+        return mav;
+    }
+    @GetMapping("/history")
+    public ModelAndView getOrderHistory(@AuthenticationPrincipal AuthUser authUser) {
+        ModelAndView mav = new ModelAndView();
+        User user = userService.getById(authUser.getUserId());
+        List<Integer> totalQuantitiesForOrders = orderService.getTotalQuantityByGivenOrders(user.getOrders());
+        mav.setViewName("user-orders-history");
+        mav.addObject("user", user);
+        mav.addObject("orders",user.getOrders());
+        mav.addObject("totalQuantitiesForOrders",totalQuantitiesForOrders);
         return mav;
     }
 }

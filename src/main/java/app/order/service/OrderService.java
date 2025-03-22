@@ -10,6 +10,8 @@ import app.payment.model.Payment;
 import app.payment.service.PaymentService;
 import app.shopping_cart.model.ShoppingCart;
 import app.shopping_cart.model.ShoppingCartInfo;
+import app.statistics.model.Statistics;
+import app.statistics.service.StatisticService;
 import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.OrderShippingRequest;
@@ -35,14 +37,16 @@ public class OrderService {
     private final OrderInfoService orderInfoService;
     private final PaymentService paymentService;
     private final UserService userService;
+    private final StatisticService statisticService;
 
-    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService) {
+    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService, StatisticService statisticService) {
         this.orderRepository = orderRepository;
         this.conversionService = conversionService;
         this.addressService = addressService;
         this.orderInfoService = orderInfoService;
         this.paymentService = paymentService;
         this.userService = userService;
+        this.statisticService = statisticService;
     }
 
     public List<Order> getAllOrders() {
@@ -93,6 +97,10 @@ public class OrderService {
         order.setOrderInfos(orderInfos);
         Order saved = orderRepository.save(order);
         userService.addOrderToUserOrders(saved, fromDB);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() + 1);
+        statisticsForToday.setTotalOrders(statisticsForToday.getTotalOrders() + 1);
+        statisticService.save(statisticsForToday);
         return saved;
     }
 
@@ -126,7 +134,12 @@ public class OrderService {
         order.setPayment(payment);
         order.setStatus(OrderStatus.CONFIRMED);
         userService.clearShoppingCart(order.getUser());
-        return orderRepository.save(order);
+        Order saved = orderRepository.save(order);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() - 1);
+        statisticsForToday.setTotalMoney(statisticsForToday.getTotalMoney().add(order.getTotalPrice()));
+        statisticService.save(statisticsForToday);
+        return saved;
     }
 
     public List<Order> getPendingOrdersByGivenUser(User user) {
@@ -156,5 +169,17 @@ public class OrderService {
             return orderRepository.save(order);
         }
         return null;
+    }
+
+    public List<Integer> getTotalQuantityByGivenOrders(List<Order> orders) {
+        List<Integer> totalQuantitiesForOrders = new ArrayList<>();
+        for (Order order : orders) {
+            int quantity = 0;
+            for (OrderInfo orderInfo : order.getOrderInfos()) {
+                quantity += orderInfo.getQuantity();
+            }
+            totalQuantitiesForOrders.add(quantity);
+        }
+        return totalQuantitiesForOrders;
     }
 }

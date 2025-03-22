@@ -33,43 +33,43 @@ public class StatisticScheduler {
         this.recordService = recordService;
     }
 
-    @Scheduled(cron = "0 * * * * *")
-    public void addStatisticForADay() {
-        List<User> userList = userService.getAllUsers();
-        int totalUsers = userList.size();
-        int totalActiveUsers = (int) userList.stream().filter(User::isActive).count();
-        int totalInactiveUsers = totalUsers - totalActiveUsers;
-        List<Order> orders = orderService.getAllOrders();
-        int totalOrders = orders.size();
-        int pendingOrders = (int) orders.stream()
-                .filter(order -> order.getStatus().equals(OrderStatus.PENDING))
-                .count();
-        int shippedOrders = (int) orders.stream()
-                .filter(order -> order.getStatus().equals(OrderStatus.SHIPPED))
-                .count();
-        List<Record> recordList = recordService.getAllRecords();
-        int totalRecords = recordList.size();
-        BigDecimal totalPrice = new BigDecimal(0);
-        for (Order order : orders) {
-            totalPrice = order.getTotalPrice();
-//            for (OrderInfo product : order.getOrderInfos()) {
-//                int quantity = product.getQuantity();
-//                BigDecimal price = product.getRecord().getPrice();
-//                price = price.multiply(new BigDecimal(quantity));
-//                totalPrice = totalPrice.add(price);
-//            }
-        }
-        Statistics statistics = Statistics.builder()
-                .activeUsers(totalActiveUsers)
-                .inactiveUsers(totalInactiveUsers)
-                .totalRecords(totalRecords)
-                .totalMoney(totalPrice)
-                .pendingOrders(pendingOrders)
-                .shippedOrders(shippedOrders)
-                .totalOrders(totalOrders)
-                .totalCustomers(totalUsers)
-                .date(LocalDate.now())
-                .build();
-        statisticService.save(statistics);
-    }
+//    @Scheduled(cron = "0 * * * * *")
+//    public void addStatisticForADay() {
+//        List<User> userList = userService.getAllUsers();
+//        int totalUsers = userList.size();
+//        int totalActiveUsers = (int) userList.stream().filter(User::isActive).count();
+//        int totalInactiveUsers = totalUsers - totalActiveUsers;
+//        List<Order> orders = orderService.getAllOrders();
+//        int totalOrders = orders.size();
+//        int pendingOrders = (int) orders.stream()
+//                .filter(order -> order.getStatus().equals(OrderStatus.PENDING))
+//                .count();
+//        int shippedOrders = (int) orders.stream()
+//                .filter(order -> order.getStatus().equals(OrderStatus.SHIPPED))
+//                .count();
+//        List<Record> recordList = recordService.getAllRecords();
+//        int totalRecords = recordList.size();
+//        BigDecimal totalPrice = new BigDecimal(0);
+//        for (Order order : orders) {
+//            totalPrice = order.getTotalPrice();
+////            for (OrderInfo product : order.getOrderInfos()) {
+////                int quantity = product.getQuantity();
+////                BigDecimal price = product.getRecord().getPrice();
+////                price = price.multiply(new BigDecimal(quantity));
+////                totalPrice = totalPrice.add(price);
+////            }
+//        }
+//        Statistics statistics = Statistics.builder()
+//                .activeUsers(totalActiveUsers)
+//                .inactiveUsers(totalInactiveUsers)
+//                .totalRecords(totalRecords)
+//                .totalMoney(totalPrice)
+//                .pendingOrders(pendingOrders)
+//                .shippedOrders(shippedOrders)
+//                .totalOrders(totalOrders)
+//                .totalCustomers(totalUsers)
+//                .date(LocalDate.now())
+//                .build();
+//        statisticService.save(statistics);
+//    }
 }
