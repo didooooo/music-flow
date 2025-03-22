@@ -8,6 +8,8 @@ import app.record.model.Record;
 import app.record.model.Type;
 import app.record.repository.RecordRepository;
 import app.review.model.Review;
+import app.statistics.model.Statistics;
+import app.statistics.service.StatisticService;
 import app.web.dto.RecordUpsertRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
@@ -29,11 +31,13 @@ public class RecordService {
     private final RecordRepository recordRepository;
     private final ConversionService conversionService;
     private final ArtistService artistService;
+    private final StatisticService statisticService;
 
-    public RecordService(RecordRepository recordRepository, ConversionService conversionService, ArtistService artistService) {
+    public RecordService(RecordRepository recordRepository, ConversionService conversionService, ArtistService artistService, StatisticService statisticService) {
         this.recordRepository = recordRepository;
         this.conversionService = conversionService;
         this.artistService = artistService;
+        this.statisticService = statisticService;
     }
 
     public List<Record> getAllRecords() {
@@ -94,6 +98,9 @@ public class RecordService {
                 .artists(artistList)
                 .build();
         recordRepository.save(record);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setTotalRecords(statisticsForToday.getTotalRecords() + 1);
+        statisticService.save(statisticsForToday);
     }
 
     private List<Artist> addArtists(RecordUpsertRequest input) {
