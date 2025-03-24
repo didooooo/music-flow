@@ -34,9 +34,9 @@
             <button class="btn btn-outline-secondary">
                 <i class="fas fa-bell"></i>
             </button>
-            <button class="btn btn-outline-secondary">
+            <a href="/logout" class="btn btn-outline-secondary">
                 <i class="fas fa-sign-out-alt"></i>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -47,7 +47,6 @@
                 <div class="stat-icon" style="background: linear-gradient(45deg, #4CAF50, #8BC34A);">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <span class="badge bg-success">+12.5%</span>
             </div>
             <div class="stat-value" th:text="${statistic.getTotalOrders()}">2,150</div>
             <div class="stat-label">Total Orders</div>
@@ -57,7 +56,6 @@
                 <div class="stat-icon" style="background: linear-gradient(45deg, #2196F3, #03A9F4);">
                     <i class="fas fa-clock"></i>
                 </div>
-                <span class="badge bg-warning">+5.2%</span>
             </div>
             <div class="stat-value" th:text="${statistic.getPendingOrders()}">48</div>
             <div class="stat-label">Pending Orders</div>
@@ -67,7 +65,6 @@
                 <div class="stat-icon" style="background: linear-gradient(45deg, #9C27B0, #E91E63);">
                     <i class="fas fa-truck"></i>
                 </div>
-                <span class="badge bg-info">+8.7%</span>
             </div>
             <div class="stat-value" th:text="${statistic.getShippedOrders()}">156</div>
             <div class="stat-label">Shipped Orders</div>
@@ -77,7 +74,6 @@
                 <div class="stat-icon" style="background: linear-gradient(45deg, #FF9800, #F44336);">
                     <i class="fas fa-dollar-sign"></i>
                 </div>
-                <span class="badge bg-danger">+15.8%</span>
             </div>
             <div class="stat-value" th:text="'$' + ${statistic.getTotalMoney()}">$32,580</div>
             <div class="stat-label">Total Revenue</div>
@@ -149,22 +145,26 @@
                         </div>
                     </td>
                     <td>
-                        <div th:text="${order.getOrderInfos().getFirst().record.title+' ...'}">SOUR - Olivia Rodrigo</div>
-                        <small th:text="${order.getOrderInfos().size()+'  items'}" class="text-muted">2 items</small>
+                        <div th:text="${order.getOrderInfos().getFirst().record.title+' ...'}">SOUR - Olivia Rodrigo
+                        </div>
+                        <small th:if="${totalQuantitiesForOrders[stat.index]>1}" class="text-muted"
+                               th:text="${totalQuantitiesForOrders[stat.index]}+' items'">2 items</small>
+                        <small th:if="${totalQuantitiesForOrders[stat.index]==1}" class="text-muted"
+                               th:text="${totalQuantitiesForOrders[stat.index]}+' item'">2 items</small>
                     </td>
                     <td th:text="'$'+${order.getTotalPrice()}">$39.98</td>
                     <td>
-                        <span th:if="${order.status.name() == 'COMPLETED' or order.status.name() == 'SHIPPED'}"
-                              th:text="${order.status.name()}" class="status-badge status-completed">Completed</span>
-                        <span th:if="${order.status.name() == 'PENDING'}"
-                              class="status-badge status-pending">Pending</span>
-                        <span th:if="${order.status.name() == 'CANCELLED'}" class="status-badge status-cancelled">Cancelled</span>
+                        <span th:if="${order.status.name() =='DELIVERED'}" class="badge bg-success text-dark" th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='PENDING'}" class="badge bg-warning text-dark" th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='CANCELLED'}" class="badge bg-danger text-dark" th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='SHIPPED'}" class="badge bg-info text-dark" th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='CONFIRMED'}" class="badge bg-primary text-dark" th:text="${order.status.name()}">Delivered</span>
                     </td>
                     <td th:text="${#temporals.format(order.updatedAt, 'yyyy-MM-dd')}">2024-03-15</td>
                     <td>
                         <div class="action-btns">
                             <button class="action-btn view-btn" data-bs-toggle="modal"
-                                    data-bs-target="#orderDetailsModal">
+                                    th:data-bs-target="'#orderDetailsModal-'+${order.id}">
                                 <i class="fas fa-eye"></i>
                             </button>
                             <button class="action-btn print-btn">
@@ -180,14 +180,18 @@
         <!-- Pagination -->
         <nav class="mt-4" th:if="${!orders.isEmpty()}">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled" th:if="${orders.hasPrevious()}">
-                    <a class="page-link" th:href="@{/orders(page=${orders.number - 1})}">Previous</a>
+                <li class="page-item" th:if="${orders.hasPrevious()}">
+                    <a class="page-link" th:href="@{/admin/orders(page=${orders.number - 1})}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
                 </li>
-                <li class="page-item active" th:each="page : ${#numbers.sequence(0, orders.totalPages - 1)}">
-                    <a class="page-link" th:href="@{/orders(page=${page})}" th:text="${page + 1}"></a>
+                <li class="page-item"  th:classappend="${page == orders.number} ? 'active'" th:each="page : ${#numbers.sequence(0, orders.totalPages - 1)}">
+                    <a class="page-link" th:href="@{/admin/orders(page=${page})}" th:text="${page + 1}"></a>
                 </li>
                 <li class="page-item" th:if="${orders.hasNext()}">
-                    <a class="page-link" th:href="@{/orders(page=${orders.number + 1})}">Next</a>
+                    <a class="page-link" th:href="@{/admin/orders(page=${orders.number + 1})}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -195,11 +199,11 @@
 </div>
 
 <!-- Order Details Modal -->
-<div class="modal fade" id="orderDetailsModal" tabindex="-1">
+<div th:each="order : ${orders.content}" class="modal fade" th:id="'orderDetailsModal-'+${order.id}" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Order Details 550e8400-e29b-41d4-a716-446655440000</h5>
+                <h5 class="modal-title" th:text="'Order Details '+${order.id}">Order Details 550e8400-e29b-41d4-a716-446655440000</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -207,38 +211,49 @@
                     <div class="order-info">
                         <div class="info-group">
                             <h6 class="info-title">Customer Information</h6>
-                            <p><strong>Name:</strong> John Doe</p>
-                            <p><strong>Email:</strong> john@example.com</p>
-                            <p><strong>Phone:</strong> +1 234 567 890</p>
+                            <p th:utext="'<strong>Name:</strong> '+${order.firstName}+' '+${order.lastName}"><strong>Name:</strong> John Doe</p>
+                            <p th:utext="'<strong>Email:</strong> '+${order.email}"><strong>Email:</strong> john@example.com</p>
+                            <p th:utext="'<strong>Phone:</strong> '+${order.phone}"><strong>Phone:</strong> +1 234 567 890</p>
                         </div>
                         <div class="info-group">
                             <h6 class="info-title">Shipping Address</h6>
-                            <p>123 Main Street</p>
-                            <p>Apt 4B</p>
-                            <p>New York, NY 10001</p>
-                            <p>United States</p>
+                            <p th:utext="${order.address.street} +'<br>'+${order.address.city}+', '+${order.address.state}+', '+${order.address.zip}">
+                                123 Music Street<br>Melody City, MC 12345</p>
                         </div>
                         <div class="info-group">
                             <h6 class="info-title">Order Summary</h6>
-                            <p><strong>Order Date:</strong> March 15, 2024</p>
-                            <p><strong>Payment Method:</strong> Credit Card</p>
-                            <p><strong>Shipping Method:</strong> Standard Shipping</p>
+                            <p th:utext="'<strong>Order Date:</strong> '+${#temporals.format(order.createdAt,'MMM d,YYYY')}"> March 20, 2024</p>
+                            <p><strong>Payment Method:</strong></p>
+                            <p th:if="${order.payment==null}">You must make a payment to complete this order.</p>
+                            <p th:if="${order.payment!=null and order.payment.getCreditCard()!=null}"
+                               th:utext="'Credit Card <br> Credit Card Number:(**** **** ****'+${order.payment.getCreditCard().lastForDigit}+') <br> Name: ' + ${order.payment.getCreditCard().name}+'<br> Expiry Date: '+${order.payment.getCreditCard().expirationMonth}+'/'+${order.payment.getCreditCard().expirationYear}">
+                                Credit Card (**** 1234)</p>
+                            <p th:if="${order.payment!=null and order.payment.getPaypal()!=null}"
+                               th:utext="'PayPal <br> Email: '+${order.payment.getPaypal().getEmail()}"></p>
+                            <p th:if="${order.payment!=null and order.payment.getBankTransfer()!=null}"
+                               th:utext="'Bank Transfer <br> IBAN: '+${order.payment.getBankTransfer().getIban()}+'<br> Account Name: ' + ${order.payment.getBankTransfer().getAccountHolder()} + '<br> Bank: '+${order.payment.getBankTransfer().bank}+ '<br> BIC/SWIFT:'+${order.payment.getBankTransfer().bic}"></p>
                         </div>
                     </div>
 
                     <h6 class="mb-3">Order Items</h6>
-                    <div class="product-items">
+                    <div th:each="orderInfo : ${order.getOrderInfos()}" class="product-items">
                         <div class="product-item">
-                            <img src="../images/sour.jpg" alt="Album" class="product-image">
+                            <img th:src="${orderInfo.record.image}" alt="Album" class="product-image">
                             <div class="product-details">
-                                <h6 class="product-title">SOUR - Olivia Rodrigo</h6>
+                                <h6 class="product-title">
+                                    <span th:text="${orderInfo.record.title}+' '"></span>
+                                    <span th:each="artist, iterStat : ${orderInfo.record.artists}">
+                                     <span th:text="${artist.name}"></span>
+                                     <span th:if="${!iterStat.last}">, </span>
+                                     </span>
+                                </h6>
                                 <div class="product-meta">
-                                    <span>Quantity: 2</span>
+                                    <span th:text="'Quantity ' + ${orderInfo.quantity}">Quantity: 2</span>
                                     <span class="mx-2">•</span>
-                                    <span>$19.99 each</span>
+                                    <span th:text="'$'+${orderInfo.record.price}+' each'">$19.99 each</span>
                                 </div>
                             </div>
-                            <div class="product-price">$39.98</div>
+                            <div class="product-price" th:text="'$'+${orderInfo.record.price*orderInfo.quantity}">$39.98</div>
                         </div>
                     </div>
 
@@ -248,41 +263,28 @@
                                 <table class="table table-borderless">
                                     <tr>
                                         <td>Subtotal:</td>
-                                        <td class="text-end">$39.98</td>
+                                        <td class="text-end" th:text="'$'+${order.totalPrice}">$39.98</td>
                                     </tr>
                                     <tr>
                                         <td>Shipping:</td>
-                                        <td class="text-end">$5.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tax:</td>
-                                        <td class="text-end">$3.60</td>
+                                        <td class="text-end">
+                                            <span th:if="${order.getTotalPrice()<=100}" class="total-value">$2.59</span>
+                                            <span th:if="${order.getTotalPrice()>100}" class="total-value">Free</span>
+                                        </td>
                                     </tr>
                                     <tr class="fw-bold">
                                         <td>Total:</td>
-                                        <td class="text-end">$48.58</td>
+                                        <td class="text-end">
+                                            <strong>
+                                            <span class="total-value" th:if="${order.getTotalPrice()}>=100"
+                                           th:text="'$'+${order.getTotalPrice()}">$48.58</span>
+                                                <span class="total-value" th:if="${order.getTotalPrice()}<100"
+                                                      th:text="'$'+${order.getTotalPrice()+2.59}">$48.58</span>
+                                            </strong>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
-                        </div>
-                    </div>
-
-                    <h6 class="mb-3 mt-4">Order Timeline</h6>
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-date">March 15, 2024 - 10:30 AM</div>
-                            <div class="timeline-title">Order Placed</div>
-                            <div class="timeline-text">Order has been placed successfully</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">March 15, 2024 - 11:45 AM</div>
-                            <div class="timeline-title">Payment Confirmed</div>
-                            <div class="timeline-text">Payment has been received</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-date">March 15, 2024 - 2:15 PM</div>
-                            <div class="timeline-title">Processing</div>
-                            <div class="timeline-text">Order is being processed</div>
                         </div>
                     </div>
                 </div>

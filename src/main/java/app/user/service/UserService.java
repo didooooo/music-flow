@@ -3,7 +3,10 @@ package app.user.service;
 import app.address.model.Address;
 import app.address.service.AddressService;
 import app.order.model.Order;
+import app.record.model.Format;
+import app.record.model.Genre;
 import app.record.model.Record;
+import app.record.model.Type;
 import app.review.model.Review;
 import app.security.AuthUser;
 import app.shopping_cart.model.ShoppingCart;
@@ -12,11 +15,18 @@ import app.shopping_cart.service.ShoppingCartInfoService;
 import app.shopping_cart.service.ShoppingCartService;
 import app.statistics.model.Statistics;
 import app.statistics.service.StatisticService;
+import app.user.model.Role;
 import app.user.model.User;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterRequest;
+import app.web.dto.UserFilterRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +37,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -146,5 +157,62 @@ public class UserService implements UserDetailsService {
         fromDB.getShoppingCart().setTotalQuantity(0);
         fromDB.getShoppingCart().setTotalPrice(BigDecimal.ZERO);
         userRepository.save(fromDB);
+    }
+    public Page<User> getEightUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
+    }
+
+    public void switchUserRole(User user,User loggedInUser) {
+        if(loggedInUser.getId().equals(user.getId())) {
+            return;
+        }
+        if(user.getRole().equals(Role.USER)){
+            user.setRole(Role.ADMIN);
+            userRepository.save(user);
+            return;
+        }
+        user.setRole(Role.USER);
+        userRepository.save(user);
+    }
+
+    public void switchUserStatus(User user,User loggedInUser) {
+        if(loggedInUser.getId().equals(user.getId())) {
+            return;
+        }
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+    }
+
+    public Page<User> getEightUsers(PageRequest of, UserFilterRequest userFilterRequest) {
+        Specification<User> spec = Specification.where(null);
+        spec = criteriaBuilder(spec,userFilterRequest);
+        String sort= userFilterRequest.getSearchedSort();
+        if (sort == null) {
+            return userRepository.findAll(spec, of);
+        } else if (sort.equals("date")) {
+            return userRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "createdAt")));
+        } else if (sort.equals("nameAsc")) {
+            return userRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "username")));
+        } else if (sort.equals("nameDesc")) {
+            return userRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "username")));
+        }
+        return userRepository.findAll(spec, of);
+    }
+    private Specification<User> criteriaBuilder(Specification<User> spec, UserFilterRequest userFilterRequest) {
+        if (!userFilterRequest.getSearchedName().isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+               return criteriaBuilder.like(root.get("username"),"%"+userFilterRequest.getSearchedName()+"%");
+            });
+        }
+        if (!userFilterRequest.getSearchedStatus().isEmpty()) {
+            boolean active;
+            if(userFilterRequest.getSearchedStatus().equalsIgnoreCase("active")) {
+                active = true;
+            } else {
+                active = false;
+            }
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.in(root.get("active")).value(active));
+        }
+        return spec;
     }
 }

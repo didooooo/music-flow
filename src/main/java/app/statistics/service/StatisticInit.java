@@ -32,6 +32,20 @@ public class StatisticInit implements CommandLineRunner {
                     .shippedOrders(0)
                     .build();
             statisticService.save(statistics);
+            return;
         }
+        Statistics first = all.getFirst();
+        Statistics statistics = Statistics.builder()
+                .shippedOrders(first.getShippedOrders())
+                .date(LocalDate.now())
+                .totalMoney(first.getTotalMoney())
+                .inactiveUsers(first.getInactiveUsers())
+                .activeUsers(first.getActiveUsers())
+                .totalRecords(first.getTotalRecords())
+                .pendingOrders(first.getPendingOrders())
+                .totalOrders(first.getTotalOrders())
+                .totalCustomers(first.getTotalCustomers())
+                .build();
+        statisticService.save(statistics);
     }
 }

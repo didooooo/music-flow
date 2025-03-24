@@ -2,6 +2,7 @@ package app.web;
 
 import app.order.model.Order;
 import app.order.model.OrderInfo;
+import app.order.model.OrderStatus;
 import app.order.service.OrderService;
 import app.security.AuthUser;
 import app.user.model.User;
@@ -80,6 +81,11 @@ public class OrdersController {
         ModelAndView mav = new ModelAndView();
         User user = userService.getById(authUser.getUserId());
         Order order = orderService.getById(id);
+        if(order.getStatus().equals(OrderStatus.CANCELLED)){
+            mav.setViewName("error-page");
+            mav.addObject("message", "Order cancelled because there is not enough quantity of this product");
+            return mav;
+        }
         mav.setViewName("order-payment");
         mav.addObject("user", user);
         mav.addObject("order", order);
@@ -116,6 +122,8 @@ public class OrdersController {
         ModelAndView mav = new ModelAndView();
         User user = userService.getById(authUser.getUserId());
         List<Order> orderList = orderService.getPendingOrdersByGivenUser(user);
+        List<Integer> totalQuantitiesForOrders = orderService.getTotalQuantityByGivenOrders(user.getOrders());
+        mav.addObject("totalQuantitiesForOrders",totalQuantitiesForOrders);
         mav.setViewName("pending-orders");
         mav.addObject("user", user);
         mav.addObject("orders", orderList);
