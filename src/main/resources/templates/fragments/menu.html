@@ -99,7 +99,7 @@
         </a>
     </div>
     <div class="nav-item">
-        <a href="users.html" th:classappend="${page=='users' ? ' active' : ''}" class="nav-link">
+        <a href="/admin/users" th:classappend="${page=='users' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-users"></i>
             Users
         </a>
@@ -111,13 +111,13 @@
         </a>
     </div>
     <div class="nav-item">
-        <a href="reports.html" th:classappend="${page=='reports' ? ' active' : ''}" class="nav-link">
+        <a href="/admin/reports" th:classappend="${page=='reports' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-chart-bar"></i>
             Reports
         </a>
     </div>
     <div class="nav-item">
-        <a href="#" th:classappend="${page=='email' ? ' active' : ''}" class="nav-link">
+        <a href="/admin/email" th:classappend="${page=='email' ? ' active' : ''}" class="nav-link">
             <i class="fas fa-envelope"></i>
             Send Email
         </a>

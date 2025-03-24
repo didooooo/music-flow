@@ -93,8 +93,8 @@
                             <tr th:each="order, stat : ${orders}">
                                 <td th:text="'#ORD-'+${stat.index+1}">#ORD-2024-004</td>
                                 <td th:text="${#temporals.format(order.createdAt,'MMM d,YYYY')}">Mar 20, 2024</td>
-                                <td th:if="${order.orderInfos.size()>1}" th:text="${order.orderInfos.size()}+' items'">2 items</td>
-                                <td th:if="${order.orderInfos.size()==1}" th:text="${order.orderInfos.size()}+' item'">2 items</td>
+                                <td th:if="${totalQuantitiesForOrders[stat.index]>1}" th:text="${totalQuantitiesForOrders[stat.index]}+' items'">2 items</td>
+                                <td th:if="${totalQuantitiesForOrders[stat.index]==1}" th:text="${totalQuantitiesForOrders[stat.index]}+' item'">2 items</td>
                                 <td th:text="'$'+${order.totalPrice}">$43.98</td>
                                 <td><span class="badge bg-warning text-dark">Pending</span></td>
                                 <td>

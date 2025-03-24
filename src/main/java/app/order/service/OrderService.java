@@ -8,6 +8,7 @@ import app.order.model.OrderStatus;
 import app.order.repository.OrderRepository;
 import app.payment.model.Payment;
 import app.payment.service.PaymentService;
+import app.record.service.RecordService;
 import app.shopping_cart.model.ShoppingCart;
 import app.shopping_cart.model.ShoppingCartInfo;
 import app.statistics.model.Statistics;
@@ -38,8 +39,9 @@ public class OrderService {
     private final PaymentService paymentService;
     private final UserService userService;
     private final StatisticService statisticService;
+    private final RecordService recordService;
 
-    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService, StatisticService statisticService) {
+    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService, StatisticService statisticService, RecordService recordService) {
         this.orderRepository = orderRepository;
         this.conversionService = conversionService;
         this.addressService = addressService;
@@ -47,6 +49,7 @@ public class OrderService {
         this.paymentService = paymentService;
         this.userService = userService;
         this.statisticService = statisticService;
+        this.recordService = recordService;
     }
 
     public List<Order> getAllOrders() {
@@ -70,11 +73,15 @@ public class OrderService {
             if (order.getOrderInfos().size() == shoppingCart.getShoppingCartInfos().size()) {
                 int foundMatchingRecordsSize = getFoundMatchingRecordsSize(order, shoppingCart);
                 if (foundMatchingRecordsSize == order.getOrderInfos().size()) {
+                    boolean declinedQuantity= checkForQuantity(order.getOrderInfos());
                     order.setAddress(address);
                     order.setFirstName(shippingRequest.getFirstName());
                     order.setLastName(shippingRequest.getLastName());
                     order.setEmail(shippingRequest.getEmail());
                     order.setPhone(shippingRequest.getPhone());
+                    if(declinedQuantity) {
+                        order.setStatus(OrderStatus.CANCELLED);
+                    }
                     return orderRepository.save(order);
                 }
             }
@@ -95,13 +102,28 @@ public class OrderService {
             orderInfos.add(saved);
         }
         order.setOrderInfos(orderInfos);
+        boolean declinedQuantity= checkForQuantity(order.getOrderInfos());
+        if(declinedQuantity) {
+            order.setStatus(OrderStatus.CANCELLED);
+        }
         Order saved = orderRepository.save(order);
         userService.addOrderToUserOrders(saved, fromDB);
         Statistics statisticsForToday = statisticService.getStatisticsForToday();
-        statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() + 1);
+        if(!declinedQuantity) {
+            statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() + 1);
+        }
         statisticsForToday.setTotalOrders(statisticsForToday.getTotalOrders() + 1);
         statisticService.save(statisticsForToday);
         return saved;
+    }
+
+    private boolean checkForQuantity(List<OrderInfo> orderInfos) {
+        for (OrderInfo orderInfo : orderInfos) {
+            if(orderInfo.getRecord().getQuantity() < orderInfo.getQuantity()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private int getFoundMatchingRecordsSize(Order order, ShoppingCart shoppingCart) {
@@ -135,6 +157,7 @@ public class OrderService {
         order.setStatus(OrderStatus.CONFIRMED);
         userService.clearShoppingCart(order.getUser());
         Order saved = orderRepository.save(order);
+        recordService.updateRecordsQuantityAfterOrder(order.getOrderInfos());
         Statistics statisticsForToday = statisticService.getStatisticsForToday();
         statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() - 1);
         statisticsForToday.setTotalMoney(statisticsForToday.getTotalMoney().add(order.getTotalPrice()));

@@ -2,6 +2,7 @@ package app.record.service;
 
 import app.artist.model.Artist;
 import app.artist.service.ArtistService;
+import app.order.model.OrderInfo;
 import app.record.model.Format;
 import app.record.model.Genre;
 import app.record.model.Record;
@@ -128,7 +129,7 @@ public class RecordService {
         spec = criteriaBuilder(format, genre, type, maxPrice, minPrice, spec);
         if (sort == null) {
             return recordRepository.findAll(spec, of);
-        } else if (sort.equals("priceAsc")) {
+        } else if (sort.equals("name")) {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "price")));
         } else if (sort.equals("priceDesc")) {
             return recordRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "price")));
@@ -174,5 +175,13 @@ public class RecordService {
     }
     public List<Record> getNewestRecords(){
         return recordRepository.findTop4ByOrderByReleaseDateDesc();
+    }
+
+    public void updateRecordsQuantityAfterOrder(List<OrderInfo> orderInfos) {
+        for (OrderInfo orderInfo : orderInfos) {
+            Record record = orderInfo.getRecord();
+            record.setQuantity(record.getQuantity() - orderInfo.getQuantity());
+            recordRepository.save(record);
+        }
     }
 }

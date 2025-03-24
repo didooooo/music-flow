@@ -34,9 +34,9 @@
             <button class="btn btn-outline-secondary">
                 <i class="fas fa-bell"></i>
             </button>
-            <button class="btn btn-outline-secondary">
+            <a href="/logout" class="btn btn-outline-secondary">
                 <i class="fas fa-sign-out-alt"></i>
-            </button>
+            </a>
         </div>
     </div>
 
@@ -47,7 +47,7 @@
                 <i class="fas fa-users"></i>
             </div>
             <div class="stat-info">
-                <h3>1,840</h3>
+                <h3 th:text="${statistic.getTotalCustomers()}">1,840</h3>
                 <p>Total Users</p>
             </div>
         </div>
@@ -56,7 +56,7 @@
                 <i class="fas fa-user-check"></i>
             </div>
             <div class="stat-info">
-                <h3>1,520</h3>
+                <h3 th:text="${statistic.getActiveUsers()}">1,520</h3>
                 <p>Active Users</p>
             </div>
         </div>
@@ -65,34 +65,34 @@
                 <i class="fas fa-user-clock"></i>
             </div>
             <div class="stat-info">
-                <h3>320</h3>
+                <h3 th:text="${statistic.getInactiveUsers()}">320</h3>
                 <p>Inactive Users</p>
             </div>
         </div>
     </div>
 
     <!-- Search and Filters -->
-    <div class="search-filters">
-        <div class="search-box">
-            <input type="text" class="form-control" placeholder="Search users...">
-            <i class="fas fa-search"></i>
+    <form th:action="@{'/admin/users/filters'}" th:method="GET" th:object="${searchRequest}">
+        <div class="search-filters">
+            <div class="search-box">
+                <input th:field="*{searchedName}" type="text" class="form-control" placeholder="Search users...">
+                <i class="fas fa-search"></i>
+            </div>
+            <select th:selected="*{searchedStatus}" th:field="*{searchedStatus}" class="form-select filter-dropdown">
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+            <select th:selected="*{searchedSort}" th:field="*{searchedSort}" class="form-select filter-dropdown">
+                <option value="nameAsc">Name: A to Z</option>
+                <option value="nameDesc">Name: Z to A</option>
+                <option value="date">Date Joined</option>
+            </select>
+            <button type="submit" class="btn btn-dark">
+                <i class="fas fa-filter me-2"></i>
+                Apply Filters
+            </button>
         </div>
-        <select class="form-select filter-dropdown">
-            <option>Active</option>
-            <option>Inactive</option>
-            <option>Pending</option>
-        </select>
-        <select class="form-select filter-dropdown">
-            <option>Name</option>
-            <option>Date Joined</option>
-            <option>Last Active</option>
-        </select>
-        <button class="btn btn-dark">
-            <i class="fas fa-filter me-2"></i>
-            Apply Filters
-        </button>
-    </div>
-
+    </form>
     <!-- User Table -->
     <div class="user-table">
         <div class="table-responsive">
@@ -100,7 +100,6 @@
                 <thead>
                 <tr>
                     <th>User</th>
-                    <th>Email</th>
                     <th>Role</th>
                     <th>Status</th>
                     <th>Joined Date</th>
@@ -109,51 +108,63 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
+                <tr th:each="user : ${users.content}">
                     <td>
                         <div class="d-flex align-items-center">
-                            <img src="../images/olivia.jpeg" alt="User" class="me-2">
+                            <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRISxBTQ88B9PvlreCwRY0_wqZK7y4XoG4zIQ&s': user.profilePicture}" alt="User" class="me-2">
                             <div>
-                                <h6 class="mb-0">Olivia Rodrigo</h6>
-                                <small class="text-muted">@oliviarodrigo</small>
+                                <h6 class="mb-0" th:text="${user.username}">Olivia Rodrigo</h6>
+                                <small th:text="${user.email}" class="text-muted">@oliviarodrigo</small>
                             </div>
                         </div>
                     </td>
-                    <td>olivia@example.com</td>
-                    <td>Customer</td>
-                    <td><span class="user-status status-active">Active</span></td>
-                    <td>2024-01-15</td>
-                    <td>2024-03-15</td>
+                    <td th:if="${user.role.name()=='USER'}">User</td>
+                    <td th:if="${user.role.name()=='ADMIN'}">Admin</td>
+                    <td>
+                        <span th:if="${user.active}" class="user-status status-active">Active</span>
+                        <span th:if="${!user.active}" class="user-status status-inactive">Inactive</span>
+                    </td>
+                    <td th:text="${#temporals.format(user.getCreatedAt(),'yyyy-MM-dd')}">2024-01-15</td>
+                    <td th:text="${#temporals.format(user.getUpdatedAt(),'yyyy-MM-dd')}">2024-03-15</td>
                     <td>
                         <div class="action-btns">
-                            <button class="action-btn view-btn" title="View Details" data-bs-toggle="modal" data-bs-target="#userDetailsModal">
+                            <button class="action-btn view-btn" title="View Details" data-bs-toggle="modal"
+                                    th:data-bs-target="'#userDetailsModal-'+${user.id}">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="action-btn edit-btn" title="Edit User">
+                            <button class="action-btn edit-btn" title="Edit User" data-bs-toggle="modal"
+                                    th:data-bs-target="'#userRoleModal-'+${user.id}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="action-btn delete-btn" title="Delete User">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                            <form th:action="@{'/users/status/'+${user.id}}" th:method="PUT">
+                                <button class="action-btn delete-btn" title="Switch Status">
+                                    <i th:if="${user.isActive()}" class="fas fa-toggle-on text-success"></i>
+                                    <i th:if="${!user.isActive()}" class="fas fa-toggle-off text-danger"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
-                <!-- Add more user rows as needed -->
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
-        <nav class="mt-4">
+        <nav class="mt-4" th:if="${!users.isEmpty()}">
             <ul class="pagination justify-content-center">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a>
+                <li class="page-item" th:if="${users.hasPrevious()}">
+                    <a class="page-link" th:href="@{/admin/users(page=${users.number - 1})}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
                 </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a>
+                <li class="page-item" th:classappend="${page == users.number} ? 'active'"
+                    th:each="page : ${#numbers.sequence(0, users.totalPages - 1)}">
+                    <a class="page-link" th:href="@{/admin/users(page=${page})}" th:text="${page + 1}"></a>
+                </li>
+                <li class="page-item" th:if="${users.hasNext()}">
+                    <a class="page-link" th:href="@{/admin/users(page=${users.number + 1})}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
@@ -161,7 +172,7 @@
 </div>
 
 <!-- User Details Modal -->
-<div class="modal fade" id="userDetailsModal" tabindex="-1">
+<div th:each="user : ${users.content}" class="modal fade" th:id="'userDetailsModal-'+${user.id}" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -170,33 +181,68 @@
             </div>
             <div class="modal-body">
                 <div class="user-details text-center">
-                    <img src="../images/olivia.jpeg" alt="User" class="user-avatar">
-                    <h4>Olivia Rodrigo</h4>
-                    <p class="text-muted">@oliviarodrigo</p>
+                    <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRISxBTQ88B9PvlreCwRY0_wqZK7y4XoG4zIQ&s': user.profilePicture}" alt="User" class="user-avatar">
+                    <h4 th:text="${user.username}"></h4>
+                    <p class="text-muted" th:if="${user.firstName!=null and user.lastName!=null}"
+                       th:text="${user.firstName}+' '+${user.lastName}"></p>
+                    <p class="text-muted" th:if="${user.firstName!=null and user.lastName==null}"
+                       th:text="${user.firstName}+"></p>
+                    <p class="text-muted" th:if="${user.firstName==null and user.lastName!=null}"
+                       th:text="${user.lastName}"></p>
                     <div class="detail-group">
                         <div class="detail-label">Email</div>
-                        <div class="detail-value">olivia@example.com</div>
+                        <div class="detail-value" th:text="${user.email}">olivia@example.com</div>
                     </div>
 
                     <div class="detail-group">
                         <div class="detail-label">Phone</div>
-                        <div class="detail-value">+1 234 567 890</div>
+                        <div class="detail-value" th:text="${user.phone}">+1 234 567 890</div>
                     </div>
 
                     <div class="detail-group">
-                        <div class="detail-label">Location</div>
-                        <div class="detail-value">New York, USA</div>
+                        <div class="detail-label">Address</div>
+                        <!--                        <div>New York, USA</div>-->
+                        <p class="detail-value"
+                           th:utext="${user.address.street} +'<br>'+${user.address.city}+', '+${user.address.state}+', '+${user.address.zip}">
+                            123 Music Street<br>Melody City, MC 12345</p>
                     </div>
 
                     <div class="detail-group">
                         <div class="detail-label">Member Since</div>
-                        <div class="detail-value">January 15, 2024</div>
+                        <div class="detail-value" th:text="${#temporals.format(user.getCreatedAt(),'MMM d,YYYY')}">
+                            January 15, 2024
+                        </div>
                     </div>
 
                     <div class="detail-group">
                         <div class="detail-label">Orders</div>
-                        <div class="detail-value">23 orders</div>
+                        <div class="detail-value" th:if="${user.orders.size()>1}"
+                             th:text="${user.orders.size()}+' orders'">23 orders
+                        </div>
+                        <div class="detail-value" th:if="${user.orders.size()==1}"
+                             th:text="${user.orders.size()}+' order'">23 orders
+                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:each="user : ${users.content}" class="modal fade" th:id="'userRoleModal-'+${user.id}" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Switch User Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h4 th:text="${user.username}"></h4>
+                <p class="text-muted">Current Role: <span th:text="${user.role}"></span></p>
+
+                <div class="form-check form-switch">
+                    <form th:action="@{'/users/role/'+${user.id}}" th:method="PUT">
+                        <button type="submit" class="btn btn-dark">Switch Role</button>
+                    </form>
                 </div>
             </div>
         </div>
