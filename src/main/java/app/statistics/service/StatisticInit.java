@@ -44,6 +44,7 @@ public class StatisticInit implements CommandLineRunner {
                 .totalRecords(first.getTotalRecords())
                 .pendingOrders(first.getPendingOrders())
                 .totalOrders(first.getTotalOrders())
+                .id(first.getId())
                 .totalCustomers(first.getTotalCustomers())
                 .build();
         statisticService.save(statistics);
