@@ -140,4 +140,14 @@ public class OrdersController {
         mav.addObject("totalQuantitiesForOrders",totalQuantitiesForOrders);
         return mav;
     }
+    @GetMapping("/{id}")
+    public ModelAndView getOrderDetail(@AuthenticationPrincipal AuthUser authUser, @PathVariable UUID id) {
+        ModelAndView mav = new ModelAndView();
+        User user = userService.getById(authUser.getUserId());
+        Order order = orderService.getById(id);
+        mav.setViewName("order-status");
+        mav.addObject("user", user);
+        mav.addObject("order", order);
+        return mav;
+    }
 }
