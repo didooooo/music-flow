@@ -205,4 +205,8 @@ public class OrderService {
         }
         return totalQuantitiesForOrders;
     }
+
+    public Order save(Order order) {
+        return orderRepository.save(order);
+    }
 }

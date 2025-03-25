@@ -22,15 +22,9 @@ import java.util.List;
 @Component
 public class StatisticScheduler {
     private final StatisticService statisticService;
-    private final UserService userService;
-    private final OrderService orderService;
-    private final RecordService recordService;
 
-    public StatisticScheduler(StatisticService statisticService, UserService userService, OrderService orderService, RecordService recordService) {
+    public StatisticScheduler(StatisticService statisticService) {
         this.statisticService = statisticService;
-        this.userService = userService;
-        this.orderService = orderService;
-        this.recordService = recordService;
     }
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -44,6 +38,7 @@ public class StatisticScheduler {
                 .inactiveUsers(first.getInactiveUsers())
                 .activeUsers(first.getActiveUsers())
                 .totalRecords(first.getTotalRecords())
+                .id(first.getId())
                 .pendingOrders(first.getPendingOrders())
                 .totalOrders(first.getTotalOrders())
                 .totalCustomers(first.getTotalCustomers())

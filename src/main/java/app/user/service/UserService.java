@@ -107,6 +107,7 @@ public class UserService implements UserDetailsService {
         user.getWishlist().add(record);
         userRepository.save(user);
     }
+
     @Transactional
     public void addRecordToCart(Record record, UUID userId) {
         User user = getById(userId);
@@ -115,16 +116,16 @@ public class UserService implements UserDetailsService {
                 if (product.getRecord().getId().equals(record.getId())) {
                     product.setQuantity(product.getQuantity() + 1);
                     user.getShoppingCart().setTotalPrice(user.getShoppingCart().getTotalPrice().add(record.getPrice()));
-                    user.getShoppingCart().setTotalQuantity(user.getShoppingCart().getTotalQuantity()+1);
+                    user.getShoppingCart().setTotalQuantity(user.getShoppingCart().getTotalQuantity() + 1);
                     userRepository.save(user);
                     return;
                 }
             }
-        }else{
+        } else {
             user.setShoppingCart(shoppingCartService.createShoppingCartForUser(user));
         }
 
-        user.getShoppingCart().getShoppingCartInfos().add(shoppingCartInfoService.addNewProductInShoppingCart(record,user.getShoppingCart()));
+        user.getShoppingCart().getShoppingCartInfos().add(shoppingCartInfoService.addNewProductInShoppingCart(record, user.getShoppingCart()));
         userRepository.save(user);
     }
 
@@ -152,21 +153,23 @@ public class UserService implements UserDetailsService {
         fromDB.getOrders().add(saved);
         userRepository.save(fromDB);
     }
+
     public void clearShoppingCart(User fromDB) {
         fromDB.getShoppingCart().getShoppingCartInfos().clear();
         fromDB.getShoppingCart().setTotalQuantity(0);
         fromDB.getShoppingCart().setTotalPrice(BigDecimal.ZERO);
         userRepository.save(fromDB);
     }
+
     public Page<User> getEightUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    public void switchUserRole(User user,User loggedInUser) {
-        if(loggedInUser.getId().equals(user.getId())) {
+    public void switchUserRole(User user, User loggedInUser) {
+        if (loggedInUser.getId().equals(user.getId())) {
             return;
         }
-        if(user.getRole().equals(Role.USER)){
+        if (user.getRole().equals(Role.USER)) {
             user.setRole(Role.ADMIN);
             userRepository.save(user);
             return;
@@ -175,18 +178,29 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    public void switchUserStatus(User user,User loggedInUser) {
-        if(loggedInUser.getId().equals(user.getId())) {
+    @Transactional
+    public void switchUserStatus(User user, User loggedInUser) {
+        if (loggedInUser.getId().equals(user.getId())) {
             return;
         }
         user.setActive(!user.isActive());
         userRepository.save(user);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        if (user.isActive()) {
+            statisticsForToday.setActiveUsers(statisticsForToday.getActiveUsers() + 1);
+            statisticsForToday.setInactiveUsers(statisticsForToday.getInactiveUsers() - 1);
+            statisticService.save(statisticsForToday);
+            return;
+        }
+        statisticsForToday.setInactiveUsers(statisticsForToday.getInactiveUsers() + 1);
+        statisticsForToday.setActiveUsers(statisticsForToday.getActiveUsers() - 1);
+        statisticService.save(statisticsForToday);
     }
 
     public Page<User> getEightUsers(PageRequest of, UserFilterRequest userFilterRequest) {
         Specification<User> spec = Specification.where(null);
-        spec = criteriaBuilder(spec,userFilterRequest);
-        String sort= userFilterRequest.getSearchedSort();
+        spec = criteriaBuilder(spec, userFilterRequest);
+        String sort = userFilterRequest.getSearchedSort();
         if (sort == null) {
             return userRepository.findAll(spec, of);
         } else if (sort.equals("date")) {
@@ -198,15 +212,16 @@ public class UserService implements UserDetailsService {
         }
         return userRepository.findAll(spec, of);
     }
+
     private Specification<User> criteriaBuilder(Specification<User> spec, UserFilterRequest userFilterRequest) {
         if (!userFilterRequest.getSearchedName().isEmpty()) {
             spec = spec.and((root, query, criteriaBuilder) -> {
-               return criteriaBuilder.like(root.get("username"),"%"+userFilterRequest.getSearchedName()+"%");
+                return criteriaBuilder.like(root.get("username"), "%" + userFilterRequest.getSearchedName() + "%");
             });
         }
         if (!userFilterRequest.getSearchedStatus().isEmpty()) {
             boolean active;
-            if(userFilterRequest.getSearchedStatus().equalsIgnoreCase("active")) {
+            if (userFilterRequest.getSearchedStatus().equalsIgnoreCase("active")) {
                 active = true;
             } else {
                 active = false;
