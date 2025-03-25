@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Preview - SoundVibe Store</title>
+    <title>Order Preview - Music Flow Store</title>
     <link rel="shortcut icon" href="../images/soundVibe3.png" type="image/x-icon">
 
     <!-- Bootstrap CSS -->
@@ -28,49 +28,57 @@
             <div class="order-status-card">
                 <div class="order-header">
                     <div>
-                        <div class="order-id">Order #ORD-2024-001</div>
-                        <div class="order-date">Placed on March 15, 2024</div>
+                        <div class="order-id" th:text="'Order '+${order.id}">Order #ORD-2024-001</div>
+                        <div class="order-date" th:text="'Placed on '+${#temporals.format(order.createdAt,'yyyy-MM-dd HH:mm')}">Placed on March 15, 2024</div>
                     </div>
-                    <span class="status-badge status-processing">Processing</span>
+                    <span th:if="${order.status.name() =='DELIVERED'}" class="status-badge bg-success text-dark" th:text="${order.status.name()}">Delivered</span>
+                    <span th:if="${order.status.name() =='PENDING'}" class="status-badge bg-warning text-dark" th:text="${order.status.name()}">Delivered</span>
+                    <span th:if="${order.status.name() =='CANCELLED'}" class="status-badge bg-danger text-dark" th:text="${order.status.name()}">Delivered</span>
+                    <span th:if="${order.status.name() =='SHIPPED'}" class="status-badge bg-info text-dark" th:text="${order.status.name()}">Delivered</span>
+                    <span th:if="${order.status.name() =='CONFIRMED'}" class="status-badge bg-primary text-dark" th:text="${order.status.name()}">Delivered</span>
                 </div>
 
-                <div class="order-timeline">
+                <div th:if="${order.status.name() != 'CANCELLED'}" class="order-timeline">
                     <div class="timeline-track">
                         <div class="timeline-progress" style="width: 50%;"></div>
                     </div>
                     <div class="timeline-steps">
-                        <div class="timeline-step" id="order-placed">
+                        <div class="timeline-step" id="order-placed" th:classappend="${order.status.name()=='CONFIRMED' or  order.status.name()=='SHIPPED' or order.status.name()=='DELIVERED' ? ' completed':'active'}" >
                             <div class="step-icon">
                                 <i class="fas fa-shopping-cart"></i>
                             </div>
-                            <div class="step-label">Order Placed</div>
-                            <div class="step-date">Mar 15, 10:30 AM</div>
+                            <div class="step-label">Pending</div>
+                            <div class="step-date" th:text="${#temporals.format(order.createdAt,'MMM d, yyyy')}">Mar 15, 10:30 AM</div>
                         </div>
-                        <div class="timeline-step active " id="confirmed">
+                        <div class="timeline-step " id="confirmed" th:classappend="${order.status.name()=='SHIPPED' or order.status.name()=='DELIVERED' ? ' completed': (order.status.name()=='CONFIRMED' ? 'active':'')}">
                             <div class="step-icon">
                                 <i class="fas fa-check"></i>
                             </div>
                             <div class="step-label">Confirmed</div>
-                            <div class="step-date">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='CONFIRMED'}"  th:text="${#temporals.format(order.updatedAt,'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='PENDING'}"  th:text="'No confirmed yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='SHIPPED'}"  th:text="${#temporals.format(order.updatedAt.minusDays(1),'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='DELIVERED'}"  th:text="${#temporals.format(order.updatedAt.minusDays(2),'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
                         </div>
-                        <div class="timeline-step  " id="processing">
-                            <div class="step-icon">
-                                <i class="fas fa-box"></i>
-                            </div>
-                            <div class="step-label ">Processing</div>
-                            <div class="step-date">Mar 15, 2:30 PM</div>
-                        </div>
-                        <div class="timeline-step" id="shipped">
+                        <div class="timeline-step" id="shipped" th:classappend="${order.status.name()=='SHIPPED' ? ' active': (order.status.name()=='DELIVERED'?'completed':'')}" >
                             <div class="step-icon">
                                 <i class="fas fa-truck"></i>
                             </div>
                             <div class="step-label">Shipped</div>
+                            <div class="step-date" th:if="${order.status.name()=='CONFIRMED'}"  th:text="'No shipped yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='PENDING'}"  th:text="'No confirmed yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='SHIPPED'}"  th:text="${#temporals.format(order.updatedAt,'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='DELIVERED'}"  th:text="${#temporals.format(order.updatedAt.minusDays(1),'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
                         </div>
-                        <div class="timeline-step " id="delivered">
+                        <div class="timeline-step " id="delivered" th:classappend="${order.status.name()=='DELIVERED' ? ' active':''}">
                             <div class="step-icon">
                                 <i class="fas fa-home"></i>
                             </div>
                             <div class="step-label">Delivered</div>
+                            <div class="step-date" th:if="${order.status.name()=='CONFIRMED'}"  th:text="'No shipped yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='PENDING'}"  th:text="'No confirmed yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='SHIPPED'}"  th:text="'No delivered yet'">Mar 15, 11:00 AM</div>
+                            <div class="step-date" th:if="${order.status.name()=='DELIVERED'}"  th:text="${#temporals.format(order.updatedAt,'MMM d, yyyy')}">Mar 15, 11:00 AM</div>
                         </div>
                     </div>
                 </div>
@@ -78,27 +86,27 @@
                     let progressBar = document.querySelector(".timeline-progress");
                     progressBar.style.width = "3%";
                     let order_placed = document.getElementById('order-placed');
-                    let processing = document.getElementById('processing');
                     let confirmed = document.getElementById('confirmed');
                     let shipped = document.getElementById('shipped');
                     let delivered = document.getElementById('delivered');
-                    if (processing.classList.contains('active')) {
-                        progressBar.style.width = "46.5%";
+                    if(delivered.classList.contains('active')) {
+                        progressBar.style.width = "89.5%";
+                    }else if (shipped.classList.contains('active')) {
+                        progressBar.style.width = "61%";
+                    } else if (confirmed.classList.contains('active')) {
+                        progressBar.style.width = "32%";
                     } else if (order_placed.classList.contains('active')) {
                         progressBar.style.width = "3%";
-                    } else if (confirmed.classList.contains('active')) {
-                        progressBar.style.width = "25%";
-                    } else if (shipped.classList.contains('active')) {
-                        progressBar.style.width = "68%";
-                    } else {
-                        progressBar.style.width = "89.5%";
+                    }else{
+                        progressBar.style.width = "0%";
                     }
 
                 </script>
                 <div class="estimated-delivery">
-                    <i class="fas fa-clock" style="font-size: 1.5rem; color: #8c52ff;"></i>
-                    <div class="delivery-date">Estimated Delivery: March 18, 2024</div>
-                    <div class="text-muted">Your order is being processed and will be shipped soon</div>
+                    <i th:if="${order.status.name() == 'CANCELLED'}" class="fas fa-exclamation-circle text-danger" style="font-size: 1.5rem; color: #106060;"></i>
+                    <i th:if="${order.status.name() != 'CANCELLED'}" class="fas fa-clock" style="font-size: 1.5rem; color: #106060;"></i>
+                    <div th:if="${order.status.name() != 'CANCELLED'}" class="delivery-date" th:text="'Estimated Delivery: '+ ${#temporals.format(order.createdAt.plusDays(3),'MMM d, yyyy')} ">Estimated Delivery: March 18, 2024</div>
+                    <div class="text-muted" th:if="${order.status.name() == 'CANCELLED'}"><strong>Your order is being cancelled because we don't have enough quantity of product that you ordered</strong></div>
                 </div>
             </div>
 
@@ -111,11 +119,17 @@
                         <h3 class="detail-title">Order Details</h3>
                     </div>
                     <div class="product-list">
-                        <div class="product-item">
-                            <img src="../images/sour.jpg" alt="Album" class="product-image">
+                        <div th:each="orderInfo : ${order.getOrderInfos()}" class="product-item">
+                            <img th:src="${orderInfo.record.image}" alt="Album" class="product-image">
                             <div class="product-info">
-                                <div class="product-name">SOUR - Olivia Rodrigo</div>
-                                <div class="product-meta">Quantity: 2 × $19.99</div>
+                                <div class="product-name">
+                                    <span th:text="${orderInfo.record.title}+' '"></span>
+                                     <span th:each="artist, iterStat : ${orderInfo.record.artists}">
+                                     <span th:text="${artist.name}"></span>
+                                     <span th:if="${!iterStat.last}">, </span>
+                                     </span>
+                                </div>
+                                <div class="product-meta" th:text="'Quantity: '+${orderInfo.quantity}+' x $'+${orderInfo.record.price}">Quantity: 2 × $19.99</div>
                             </div>
                         </div>
                     </div>
@@ -129,12 +143,9 @@
                         <h3 class="detail-title">Shipping Details</h3>
                     </div>
                     <div class="shipping-info">
-                        <p><strong>John Doe</strong></p>
-                        <p>123 Music Street</p>
-                        <p>Apt 4B</p>
-                        <p>New York, NY 10001</p>
-                        <p>United States</p>
-                        <p>Phone: +1 234 567 890</p>
+                        <p th:text="${order.firstName}+' '+${order.lastName}"><strong>John Doe</strong></p>
+                        <p th:utext="${order.address.street} +'<br>'+${order.address.city}+', '+${order.address.state}+', '+${order.address.zip}">
+                            123 Music Street<br>Melody City, MC 12345</p>
                     </div>
                 </div>
             </div>
