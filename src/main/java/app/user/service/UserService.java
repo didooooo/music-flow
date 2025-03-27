@@ -2,14 +2,12 @@ package app.user.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
+import app.notification.model.Notification;
+import app.notification.service.NotificationService;
 import app.order.model.Order;
-import app.record.model.Format;
-import app.record.model.Genre;
 import app.record.model.Record;
-import app.record.model.Type;
 import app.review.model.Review;
 import app.security.AuthUser;
-import app.shopping_cart.model.ShoppingCart;
 import app.shopping_cart.model.ShoppingCartInfo;
 import app.shopping_cart.service.ShoppingCartInfoService;
 import app.shopping_cart.service.ShoppingCartService;
@@ -20,6 +18,7 @@ import app.user.model.User;
 import app.user.repository.UserRepository;
 import app.web.dto.EditAccountRequest;
 import app.web.dto.RegisterRequest;
+import app.web.dto.SendEmailRequest;
 import app.web.dto.UserFilterRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
@@ -38,7 +37,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -49,8 +47,9 @@ public class UserService implements UserDetailsService {
     private final AddressService addressService;
     private final ShoppingCartService shoppingCartService;
     private final ShoppingCartInfoService shoppingCartInfoService;
+    private final NotificationService notificationService;
 
-    public UserService(UserRepository userRepository, StatisticService statisticService, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService, ShoppingCartService shoppingCartService, ShoppingCartInfoService shoppingCartInfoService) {
+    public UserService(UserRepository userRepository, StatisticService statisticService, ConversionService conversionService, PasswordEncoder passwordEncoder, AddressService addressService, ShoppingCartService shoppingCartService, ShoppingCartInfoService shoppingCartInfoService, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.statisticService = statisticService;
         this.conversionService = conversionService;
@@ -58,6 +57,7 @@ public class UserService implements UserDetailsService {
         this.addressService = addressService;
         this.shoppingCartService = shoppingCartService;
         this.shoppingCartInfoService = shoppingCartInfoService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -256,5 +256,12 @@ public class UserService implements UserDetailsService {
         statisticService.save(statisticsForToday);
         user.setActive(false);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void createNotificationFromGivenUser(User user, SendEmailRequest sendEmailRequest) {
+       Notification notification = notificationService.createNotificationFromUserToAdmin(user,sendEmailRequest);
+       user.getNotifications().add(notification);
+       userRepository.save(user);
     }
 }

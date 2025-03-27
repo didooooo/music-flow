@@ -1,5 +1,5 @@
 package app.notification.model;
 
 public enum MessageType {
-    ORDER
+    ORDER_RELATED, GENERAL, SUPPORT
 }
