@@ -18,6 +18,7 @@ import app.statistics.service.StatisticService;
 import app.user.model.Role;
 import app.user.model.User;
 import app.user.repository.UserRepository;
+import app.web.dto.EditAccountRequest;
 import app.web.dto.RegisterRequest;
 import app.web.dto.UserFilterRequest;
 import jakarta.transaction.Transactional;
@@ -229,5 +230,31 @@ public class UserService implements UserDetailsService {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.in(root.get("active")).value(active));
         }
         return spec;
+    }
+
+    public User editInfo(User user, EditAccountRequest editAccountRequest) {
+        user.setEmail(editAccountRequest.getEmail());
+        user.setFirstName(editAccountRequest.getFirstName());
+        user.setLastName(editAccountRequest.getLastName());
+        if (!(editAccountRequest.getPassword() == null || editAccountRequest.getPassword().isBlank())) {
+            user.setPassword(passwordEncoder.encode(editAccountRequest.getPassword()));
+        }
+        user.setPhone(editAccountRequest.getPhone());
+        if (!(editAccountRequest.getUrlPhoto() == null || editAccountRequest.getUrlPhoto().isBlank())) {
+            user.setProfilePicture(editAccountRequest.getUrlPhoto());
+        }
+        Address address = addressService.save(editAccountRequest.getStreet(), editAccountRequest.getCity(), editAccountRequest.getState(), editAccountRequest.getZip());
+        user.setAddress(address);
+        return userRepository.save(user);
+    }
+
+    @Transactional
+    public void deleteUser(User user) {
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setActiveUsers(statisticsForToday.getActiveUsers() - 1);
+        statisticsForToday.setInactiveUsers(statisticsForToday.getInactiveUsers() + 1);
+        statisticService.save(statisticsForToday);
+        user.setActive(false);
+        userRepository.save(user);
     }
 }

@@ -99,10 +99,6 @@
                 <!-- Image field -->
                 <div class="form-outline mb-4">
                     <label for="user_image" class="form-label">Profile Picture</label>
-<!--                    <input type="file" id="user_image" class="form-control"-->
-<!--                           name="user_image"-->
-<!--                           accept="image/*"-->
-<!--                    />-->
                     <input th:field="*{profilePicture}" type="hidden" role="uploadcare-uploader" name="user_image" id="user_image" />
                     <div th:if="${#fields.hasErrors('profilePicture')}" th:errors="*{profilePicture}" class="invalid-feedback">
                         Please select a valid image file.
