@@ -24,6 +24,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "users")
 @Builder(toBuilder = true)
 public class User {
     @Id
