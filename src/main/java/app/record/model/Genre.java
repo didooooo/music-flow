@@ -4,6 +4,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum Genre {
     POP("POP"),
+    ROCK("ROCK"),
+    JAZZ("JAZZ"),
+    BLUES("BLUES"),
+    CLASSICAL("CLASSICAL"),
+    HIP_HOP("HIP_HOP"),
+    RAP("RAP"),
+    RNB("RNB"),
+    DISCO("DISCO"),
+    COUNTRY("COUNTRY"),
+    ELECTRONIC("ELECTRONIC"),
+    HOUSE("HOUSE"),
+    TECHNO("TECHNO"),
+    METAL("METAL"),
+    PUNK("PUNK"),
+    ALTERNATIVE("ALTERNATIVE"),
+    FOLK("FOLK"),
+    LATIN("LATIN"),
+    SOUNDTRACK("SOUNDTRACK"),
     UNKNOWN("UNKNOWN");
     private final String code;
 
