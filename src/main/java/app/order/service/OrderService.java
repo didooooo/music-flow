@@ -15,20 +15,25 @@ import app.statistics.model.Statistics;
 import app.statistics.service.StatisticService;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.OrderShippingRequest;
-import app.web.dto.PaymentBankTransferRequest;
-import app.web.dto.PaymentCreditCardRequest;
-import app.web.dto.PaymentPayPalRequest;
+import app.utils.DateUtils;
+import app.web.dto.*;
+import jakarta.persistence.criteria.Join;
 import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.*;
 
 @Service
 public class OrderService {
@@ -41,7 +46,7 @@ public class OrderService {
     private final StatisticService statisticService;
     private final RecordService recordService;
 
-    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService, StatisticService statisticService, RecordService recordService) {
+    public OrderService(OrderRepository orderRepository, ConversionService conversionService, AddressService addressService, OrderInfoService orderInfoService, PaymentService paymentService, UserService userService, StatisticService statisticService, @Lazy RecordService recordService) {
         this.orderRepository = orderRepository;
         this.conversionService = conversionService;
         this.addressService = addressService;
@@ -73,13 +78,13 @@ public class OrderService {
             if (order.getOrderInfos().size() == shoppingCart.getShoppingCartInfos().size()) {
                 int foundMatchingRecordsSize = getFoundMatchingRecordsSize(order, shoppingCart);
                 if (foundMatchingRecordsSize == order.getOrderInfos().size()) {
-                    boolean declinedQuantity= checkForQuantity(order.getOrderInfos());
+                    boolean declinedQuantity = checkForQuantity(order.getOrderInfos());
                     order.setAddress(address);
                     order.setFirstName(shippingRequest.getFirstName());
                     order.setLastName(shippingRequest.getLastName());
                     order.setEmail(shippingRequest.getEmail());
                     order.setPhone(shippingRequest.getPhone());
-                    if(declinedQuantity) {
+                    if (declinedQuantity) {
                         order.setStatus(OrderStatus.CANCELLED);
                     }
                     return orderRepository.save(order);
@@ -102,14 +107,14 @@ public class OrderService {
             orderInfos.add(saved);
         }
         order.setOrderInfos(orderInfos);
-        boolean declinedQuantity= checkForQuantity(order.getOrderInfos());
-        if(declinedQuantity) {
+        boolean declinedQuantity = checkForQuantity(order.getOrderInfos());
+        if (declinedQuantity) {
             order.setStatus(OrderStatus.CANCELLED);
         }
         Order saved = orderRepository.save(order);
         userService.addOrderToUserOrders(saved, fromDB);
         Statistics statisticsForToday = statisticService.getStatisticsForToday();
-        if(!declinedQuantity) {
+        if (!declinedQuantity) {
             statisticsForToday.setPendingOrders(statisticsForToday.getPendingOrders() + 1);
         }
         statisticsForToday.setTotalOrders(statisticsForToday.getTotalOrders() + 1);
@@ -119,7 +124,7 @@ public class OrderService {
 
     private boolean checkForQuantity(List<OrderInfo> orderInfos) {
         for (OrderInfo orderInfo : orderInfos) {
-            if(orderInfo.getRecord().getQuantity() < orderInfo.getQuantity()) {
+            if (orderInfo.getRecord().getQuantity() < orderInfo.getQuantity()) {
                 return true;
             }
         }
@@ -208,5 +213,124 @@ public class OrderService {
 
     public Order save(Order order) {
         return orderRepository.save(order);
+    }
+
+    public Page<Order> getEightOrders(PageRequest of, OrderFilterRequest orderFilterRequest) {
+        Specification<Order> spec = Specification.where(null);
+        spec = criteriaBuilder(spec, orderFilterRequest);
+        return orderRepository.findAll(spec, PageRequest.of(of.getPageNumber(), of.getPageSize()));
+    }
+
+    private Specification<Order> criteriaBuilder(Specification<Order> spec, OrderFilterRequest orderFilterRequest) {
+        if (!orderFilterRequest.getProductsName().isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                Join<Order, OrderInfo> orderInfoJoin = root.join("orderInfos");
+                return criteriaBuilder.like(criteriaBuilder.lower(orderInfoJoin.get("record").get("title")), "%" + orderFilterRequest.getProductsName().toLowerCase() + "%");
+            });
+        }
+
+        if (orderFilterRequest.getOrderStatus() != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.in(root.get("status")).value(orderFilterRequest.getOrderStatus()));
+        }
+
+        if (orderFilterRequest.getFromDate() != null && orderFilterRequest.getToDate() != null) {
+            LocalDateTime fromDateTime = orderFilterRequest.getFromDate().atStartOfDay();
+            LocalDateTime toDateTime = orderFilterRequest.getToDate().atTime(23, 59, 59);
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.between(root.get("createdAt"), fromDateTime, toDateTime)
+            );
+        }
+        if (orderFilterRequest.getFromDate() != null && orderFilterRequest.getToDate() == null) {
+            LocalDateTime fromDateTime = orderFilterRequest.getFromDate().atStartOfDay();
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("createdAt"), fromDateTime)
+            );
+        }
+        if (orderFilterRequest.getFromDate() == null && orderFilterRequest.getToDate() != null) {
+            LocalDateTime toDateTime = orderFilterRequest.getToDate().atTime(23, 59, 59);
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("createdAt"), toDateTime)
+            );
+        }
+        return spec;
+    }
+
+    public List<Order> getOrdersByDay(LocalDateTime from, LocalDateTime to) {
+        return orderRepository.findAllByCreatedAtBetween(from, to);
+    }
+    public Map<String, Integer> getChartInfo(String period) {
+        if (period.equals("week")) {
+            return getChartInfoForOneWeek();
+        } else if (period.equals("month")) {
+            YearMonth month = YearMonth.of(LocalDate.now().getYear(), LocalDate.now().getMonth());
+            List<DateUtils> weeks = getWeeksByISO(month);
+            return getStringIntegerMap(weeks);
+        } else if (period.equals("year")) {
+            List<DateUtils> dateUtils = getForMonth();
+            return getStringIntegerMap(dateUtils);
+        }
+        return null;
+    }
+
+    private Map<String, Integer> getStringIntegerMap(List<DateUtils> dateUtils) {
+        Map<String, Integer> chartInfo = new LinkedHashMap<>();
+        for (DateUtils month : dateUtils) {
+            List<Order> orders = getOrdersByDay(month.getStartDateTime(), month.getEndDateTime());
+            chartInfo.put(month.getLabel(), orders.size());
+        }
+        return chartInfo;
+    }
+
+    private List<DateUtils> getForMonth() {
+        List<DateUtils> dateUtils = new ArrayList<>();
+        for (int month = 1; month <= 12; month++) {
+            LocalDate firstDay = LocalDate.of(LocalDate.now().getYear(), month, 1);
+            LocalDate lastDay = firstDay.withDayOfMonth(firstDay.lengthOfMonth());
+            dateUtils.add(new DateUtils(
+                    firstDay.getMonth().name(),
+                    firstDay.atStartOfDay(),
+                    lastDay.atTime(23, 59, 59)
+            ));
+        }
+        return dateUtils;
+    }
+
+    public List<DateUtils> getWeeksByISO(YearMonth month) {
+        List<DateUtils> dateUtils = new ArrayList<>();
+        LocalDate start = month.atDay(1);
+        LocalDate end = month.atEndOfMonth();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d").localizedBy(Locale.ENGLISH);
+        while (!start.isAfter(end)) {
+            LocalDate weekEnd = start.with(DayOfWeek.SUNDAY);
+            if (weekEnd.isAfter(end)) weekEnd = end;
+            String label;
+            if (start.getDayOfMonth() == 1) {
+                label = "Begin: " + start.format(formatter) + " - " + weekEnd.format(formatter);
+            } else if (weekEnd.equals(end)) {
+                label = start.format(formatter) + " - End";
+            } else {
+                label = start.format(formatter) + " - " + weekEnd.format(formatter);
+            }
+            LocalDateTime startDateTime = start.atStartOfDay();
+            LocalDateTime endDateTime = weekEnd.atTime(23, 59, 59);
+            dateUtils.add(new DateUtils(label, startDateTime, endDateTime));
+            start = weekEnd.plusDays(1);
+        }
+
+        return dateUtils;
+    }
+
+
+    private Map<String, Integer> getChartInfoForOneWeek() {
+        Map<String, Integer> chartInfo = new LinkedHashMap<>();
+        int days = 0;
+        while (days < 7) {
+            LocalDate today = LocalDate.now();
+            today = today.minusDays(days);
+            List<Order> orders = getOrdersByDay(today.atStartOfDay(), today.atTime(23, 59, 59));
+            chartInfo.put(today.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH), orders.size());
+            days++;
+        }
+        return chartInfo;
     }
 }

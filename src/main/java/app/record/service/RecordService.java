@@ -2,7 +2,9 @@ package app.record.service;
 
 import app.artist.model.Artist;
 import app.artist.service.ArtistService;
+import app.order.model.Order;
 import app.order.model.OrderInfo;
+import app.order.service.OrderService;
 import app.record.model.Format;
 import app.record.model.Genre;
 import app.record.model.Record;
@@ -18,13 +20,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,12 +33,14 @@ public class RecordService {
     private final ConversionService conversionService;
     private final ArtistService artistService;
     private final StatisticService statisticService;
+    private final OrderService orderService;
 
-    public RecordService(RecordRepository recordRepository, ConversionService conversionService, ArtistService artistService, StatisticService statisticService) {
+    public RecordService(RecordRepository recordRepository, ConversionService conversionService, ArtistService artistService, StatisticService statisticService, OrderService orderService) {
         this.recordRepository = recordRepository;
         this.conversionService = conversionService;
         this.artistService = artistService;
         this.statisticService = statisticService;
+        this.orderService = orderService;
     }
 
     public List<Record> getAllRecords() {
@@ -53,11 +55,11 @@ public class RecordService {
         } else if (sort.equals("priceDesc")) {
             return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "price")));
         } else if (sort.equals("releaseDate")) {
-            return recordRepository.findAll( PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "releaseDate")));
+            return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "releaseDate")));
         } else if (sort.equals("nameAsc")) {
-            return recordRepository.findAll( PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "title")));
+            return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.ASC, "title")));
         } else if (sort.equals("nameDesc")) {
-            return recordRepository.findAll( PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "title")));
+            return recordRepository.findAll(PageRequest.of(of.getPageNumber(), of.getPageSize(), Sort.by(Sort.Direction.DESC, "title")));
         }
         return recordRepository.findAll(of);
     }
@@ -169,11 +171,12 @@ public class RecordService {
         return spec;
     }
 
-    public void addReviewToTheRecord(Record record,Review saved) {
+    public void addReviewToTheRecord(Record record, Review saved) {
         record.getReviews().add(saved);
         recordRepository.save(record);
     }
-    public List<Record> getNewestRecords(){
+
+    public List<Record> getNewestRecords() {
         return recordRepository.findTop4ByOrderByReleaseDateDesc();
     }
 
@@ -183,5 +186,50 @@ public class RecordService {
             record.setQuantity(record.getQuantity() - orderInfo.getQuantity());
             recordRepository.save(record);
         }
+    }
+
+    @Transactional
+    public void deleteRecord(Record record) {
+        record.setQuantity(0);
+        recordRepository.save(record);
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        statisticsForToday.setTotalRecords(statisticsForToday.getTotalRecords() - 1);
+        statisticService.save(statisticsForToday);
+
+    }
+
+    public Record getTopSellingRecord() {
+        List<Order> allOrders = orderService.getAllOrders();
+        Map<Record, Integer> recordSales = new HashMap<>();
+        for (Order allOrder : allOrders) {
+            for (OrderInfo orderInfo : allOrder.getOrderInfos()) {
+                Record record = orderInfo.getRecord();
+                int quantity = orderInfo.getQuantity();
+                recordSales.put(record, recordSales.getOrDefault(record, 0) + quantity);
+            }
+        }
+        Record topSellingRecord = null;
+        int maxQuantity = 0;
+        for (Map.Entry<Record, Integer> kvp : recordSales.entrySet()) {
+            if (kvp.getValue() > maxQuantity) {
+                maxQuantity = kvp.getValue();
+                topSellingRecord = kvp.getKey();
+            }
+        }
+        return topSellingRecord;
+    }
+
+    public Pair<BigDecimal, Integer> getTotalSoldQuantityAndTotalMoneySpent(Record record) {
+        int totalSoldQuantity = 0;
+        BigDecimal totalMoneySpent = BigDecimal.ZERO;
+        for (Order allOrder : orderService.getAllOrders()) {
+            for (OrderInfo orderInfo : allOrder.getOrderInfos()) {
+                if (orderInfo.getRecord().getId().equals(record.getId())) {
+                    totalSoldQuantity += orderInfo.getQuantity();
+                    totalMoneySpent = totalMoneySpent.add(orderInfo.getRecord().getPrice().multiply(new BigDecimal(orderInfo.getQuantity())));
+                }
+            }
+        }
+        return Pair.of(totalMoneySpent, totalSoldQuantity);
     }
 }

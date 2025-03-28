@@ -82,32 +82,31 @@
 
     <!-- Order Filters -->
     <div class="order-filters">
-        <form action="">
+        <form th:action="@{'/admin/orders/filters'}" th:method="GET" th:object="${filterRequest}">
             <div class="filter-row">
                 <div class="filter-item">
-                    <input type="text" class="form-control" placeholder="Search orders...">
+                    <input th:field="*{productsName}" type="text" class="form-control" placeholder="Search orders...">
                 </div>
                 <div class="filter-item">
-                    <select class="form-select">
-                        <option>Pending</option>
-                        <option>Processing</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
-                        <option>Cancelled</option>
+                    <select th:field="*{orderStatus}" class="form-select">
+                        <option value="" th:text="ALL"></option>
+                        <option th:each="status : ${T(app.order.model.OrderStatus).values()}"
+                                th:value="${status.name()}"
+                                th:text="${status.name()}">Pending</option>
                     </select>
                 </div>
                 <div class="filter-item date-range">
-                    <input type="date" class="form-control" placeholder="Start Date">
-                    <input type="date" class="form-control" placeholder="End Date">
+                    <input th:field="*{fromDate}" type="date" class="form-control">
+                    <input th:field="*{toDate}" type="date" class="form-control">
                 </div>
             </div>
             <div class="filter-row">
-                <button class="btn btn-dark">
+                <button type="submit" class="btn btn-dark">
                     <i class="fas fa-filter me-2"></i>Apply Filters
                 </button>
-                <button type="reset" class="btn btn-outline-secondary">
+                <a href="/admin/orders" class="btn btn-outline-secondary">
                     <i class="fas fa-redo me-2"></i>Reset
-                </button>
+                </a>
                 <button class="btn btn-success">
                     <i class="fas fa-file-excel me-2"></i>Export
                 </button>
