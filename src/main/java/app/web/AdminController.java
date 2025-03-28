@@ -10,20 +10,25 @@ import app.statistics.model.Statistics;
 import app.statistics.service.StatisticService;
 import app.user.model.User;
 import app.user.service.UserService;
+import app.web.dto.OrderFilterRequest;
 import app.web.dto.RecordUpsertRequest;
 import app.web.dto.SearchRecordByNameRequest;
 import app.web.dto.UserFilterRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -35,7 +40,7 @@ public class AdminController {
     private final ArtistService artistService;
     private final UserService userService;
 
-    public AdminController(OrderService orderService, StatisticService statisticService, RecordService recordService, ArtistService artistService,  UserService userService) {
+    public AdminController(OrderService orderService, StatisticService statisticService, RecordService recordService, ArtistService artistService, UserService userService) {
         this.orderService = orderService;
         this.statisticService = statisticService;
         this.recordService = recordService;
@@ -66,6 +71,23 @@ public class AdminController {
         modelAndView.addObject("page", "orders");
         modelAndView.addObject("orders", orders);
         modelAndView.addObject("totalQuantitiesForOrders", totalQuantitiesForOrders);
+        modelAndView.addObject("filterRequest", new OrderFilterRequest());
+        return modelAndView;
+    }
+
+    @GetMapping("/orders/filters")
+    public ModelAndView getOrdersPageWithFilters(@RequestParam(defaultValue = "0", name = "page") int page,
+                                                 OrderFilterRequest orderFilterRequest) {
+        ModelAndView modelAndView = new ModelAndView();
+        Statistics statistics = statisticService.getStatisticsForToday();
+        Page<Order> orders = orderService.getEightOrders(PageRequest.of(page, 8), orderFilterRequest);
+        List<Integer> totalQuantitiesForOrders = orderService.getTotalQuantityByGivenOrders(orders.getContent());
+        modelAndView.setViewName("admin-orders");
+        modelAndView.addObject("page", "orders");
+        modelAndView.addObject("orders", orders);
+        modelAndView.addObject("statistic", statistics);
+        modelAndView.addObject("totalQuantitiesForOrders", totalQuantitiesForOrders);
+        modelAndView.addObject("filterRequest", orderFilterRequest);
         return modelAndView;
     }
 
@@ -94,12 +116,13 @@ public class AdminController {
         modelAndView.addObject("searchRequest", new UserFilterRequest());
         return modelAndView;
     }
+
     @GetMapping("/users/filters")
     public ModelAndView getUsersPageWithFilters(@RequestParam(defaultValue = "0", name = "page") int page,
                                                 UserFilterRequest userFilterRequest) {
         ModelAndView modelAndView = new ModelAndView();
         Statistics statistics = statisticService.getStatisticsForToday();
-        Page<User> users = userService.getEightUsers(PageRequest.of(page, 8),userFilterRequest);
+        Page<User> users = userService.getEightUsers(PageRequest.of(page, 8), userFilterRequest);
         modelAndView.setViewName("admin-users");
         modelAndView.addObject("page", "users");
         modelAndView.addObject("users", users);
@@ -109,9 +132,30 @@ public class AdminController {
     }
 
     @GetMapping("/reports")
-    public ModelAndView getReportsPage() {
+    public ModelAndView getReportsPage(@RequestParam(name = "period", defaultValue = "week") String period) {
         ModelAndView modelAndView = new ModelAndView();
+        Statistics statisticsForToday = statisticService.getStatisticsForToday();
+        Record record = recordService.getTopSellingRecord();
+        User user = userService.getTopCustomer();
+        Pair<BigDecimal, Integer> totalSoldQuantityAndTotalMoneySpent = recordService.getTotalSoldQuantityAndTotalMoneySpent(record);
+        BigDecimal totalSpentMoney = userService.getTotalSpentMoneyByGivenUser(user);
+        Map<String, Integer> chartInfo = orderService.getChartInfo(period);
         modelAndView.setViewName("admin-reports");
+        modelAndView.addObject("topUser", user);
+        modelAndView.addObject("totalSpentMoneyUser", totalSpentMoney);
+        modelAndView.addObject("topRecord", record);
+        modelAndView.addObject("period", period);
+        modelAndView.addObject("totalSoldQuantity", totalSoldQuantityAndTotalMoneySpent.getSecond());
+        modelAndView.addObject("totalMoneySpent", totalSoldQuantityAndTotalMoneySpent.getFirst());
+        modelAndView.addObject("page", "reports");
+        if(period.equals("week")) {
+            modelAndView.addObject("chartInfoLabels", new ArrayList<>(chartInfo.keySet()).reversed());
+            modelAndView.addObject("chartInfoValues", new ArrayList<>(chartInfo.values()).reversed());
+        }else{
+            modelAndView.addObject("chartInfoLabels", new ArrayList<>(chartInfo.keySet()));
+            modelAndView.addObject("chartInfoValues", new ArrayList<>(chartInfo.values()));
+        }
+        modelAndView.addObject("statistics", statisticsForToday);
         return modelAndView;
     }
 

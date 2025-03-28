@@ -264,4 +264,32 @@ public class UserService implements UserDetailsService {
        user.getNotifications().add(notification);
        userRepository.save(user);
     }
+
+    public User getTopCustomer() {
+        List<User> users = userRepository.findAll();
+        User topCustomer = null;
+        BigDecimal maxSpent = BigDecimal.ZERO;
+        int maxOrders = 0;
+        for (User user : users) {
+            BigDecimal totalSpent = BigDecimal.ZERO;
+            int orderCount = user.getOrders().size();
+            for (Order order : user.getOrders()) {
+               totalSpent=totalSpent.add(order.getTotalPrice());
+            }
+            if (totalSpent.compareTo(maxSpent)>0 || (totalSpent.compareTo(maxSpent)==0 && orderCount > maxOrders)) {
+                maxSpent = totalSpent;
+                maxOrders = orderCount;
+                topCustomer = user;
+            }
+        }
+        return topCustomer;
+    }
+
+    public BigDecimal getTotalSpentMoneyByGivenUser(User user) {
+        BigDecimal totalSpent = BigDecimal.ZERO;
+        for (Order order : user.getOrders()) {
+            totalSpent=totalSpent.add(order.getTotalPrice());
+        }
+        return totalSpent;
+    }
 }

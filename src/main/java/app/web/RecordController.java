@@ -153,5 +153,13 @@ public class RecordController {
         mav.setViewName("product-info");
         return mav;
     }
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ModelAndView deleteRecord(@PathVariable UUID id, @AuthenticationPrincipal AuthUser user) {
+        ModelAndView mav = new ModelAndView();
+        recordService.deleteRecord(recordService.findById(id));
+        mav.setViewName("redirect:/admin/records");
+        return mav;
+    }
 
 }

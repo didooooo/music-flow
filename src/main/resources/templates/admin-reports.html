@@ -54,12 +54,8 @@
                     <i class="fas fa-dollar-sign"></i>
                 </div>
             </div>
-            <div class="stat-value">$32,580</div>
+            <div class="stat-value" th:text="'$'+${statistics.getTotalMoney()}">$32,580</div>
             <div class="stat-label">Total Revenue</div>
-            <div class="trend-indicator trend-up">
-                <i class="fas fa-arrow-up"></i>
-                <span>12.5% vs last month</span>
-            </div>
         </div>
         <div class="stat-card">
             <div class="stat-header">
@@ -67,12 +63,8 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
             </div>
-            <div class="stat-value">2,150</div>
+            <div class="stat-value" th:text="${statistics.totalOrders}">2,150</div>
             <div class="stat-label">Total Orders</div>
-            <div class="trend-indicator trend-up">
-                <i class="fas fa-arrow-up"></i>
-                <span>8.3% vs last month</span>
-            </div>
         </div>
         <div class="stat-card">
             <div class="stat-header">
@@ -80,25 +72,8 @@
                     <i class="fas fa-users"></i>
                 </div>
             </div>
-            <div class="stat-value">1,840</div>
+            <div class="stat-value" th:text="${statistics.totalCustomers}">1,840</div>
             <div class="stat-label">Total Customers</div>
-            <div class="trend-indicator trend-up">
-                <i class="fas fa-arrow-up"></i>
-                <span>5.2% vs last month</span>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-header">
-                <div class="stat-icon" style="background: linear-gradient(45deg, #FF9800, #F44336);">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-            </div>
-            <div class="stat-value">15.8%</div>
-            <div class="stat-label">Conversion Rate</div>
-            <div class="trend-indicator trend-down">
-                <i class="fas fa-arrow-down"></i>
-                <span>2.1% vs last month</span>
-            </div>
         </div>
     </div>
 
@@ -106,15 +81,16 @@
     <div class="report-section">
         <div class="section-header">
             <h2 class="section-title">Sales Overview</h2>
-            <div class="date-filter">
-                <select class="form-select">
-                    <option>Last 7 Days</option>
-                    <option>Last 30 Days</option>
-                    <option>Last 3 Months</option>
-                    <option>Last Year</option>
-                </select>
-                <button class="btn export-btn">Check</button>
-            </div>
+            <form th:action="@{'/admin/reports'}" th:method="GET">
+                <div class="date-filter">
+                    <select name="period" id="sort" onchange="this.form.submit()" class="form-select">
+                        <option value="week" th:selected="${period == 'week'}">Last Week</option>
+                        <option value="month" th:selected="${period == 'month'}">Last Month</option>
+                        <option value="year" th:selected="${period == 'year'}">Last Year</option>
+                    </select>
+                    <!--                <button class="btn export-btn">Check</button>-->
+                </div>
+            </form>
         </div>
         <div class="chart-container">
             <canvas id="salesChart"></canvas>
@@ -130,15 +106,20 @@
             <ul class="item-list">
                 <li>
                     <div class="item-info">
-                        <img src="../images/sour.jpg" alt="Album" class="item-image">
+                        <img th:src="${topRecord.image}" alt="Album" class="item-image">
                         <div>
-                            <div class="fw-bold">SOUR</div>
-                            <small class="text-muted">Olivia Rodrigo</small>
+                            <div class="fw-bold" th:text="${topRecord.title}">SOUR</div>
+                            <small class="text-muted">
+                                <span th:each="artist, iterStat : ${topRecord.artists}">
+                                    <span th:text="${artist.name}"></span>
+                                    <span th:if="${!iterStat.last}">, </span>
+                                </span>
+                            </small>
                         </div>
                     </div>
                     <div class="text-end">
-                        <div class="fw-bold">352 sold</div>
-                        <small class="text-muted">$7,040</small>
+                        <div class="fw-bold" th:text="${totalSoldQuantity+' sold'}">352 sold</div>
+                        <small class="text-muted" th:text="'$'+${totalMoneySpent}">$7,040</small>
                     </div>
                 </li>
                 <!-- Add more items -->
@@ -152,14 +133,16 @@
             <ul class="item-list">
                 <li>
                     <div class="item-info">
-                        <img src="../images/olivia.jpeg" alt="User" class="item-image">
+                        <img th:src="${#strings.isEmpty(topUser.profilePicture) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRISxBTQ88B9PvlreCwRY0_wqZK7y4XoG4zIQ&s': topUser.profilePicture}"
+                             alt="User" class="item-image">
                         <div>
-                            <div class="fw-bold">Olivia Rodrigo</div>
-                            <small class="text-muted">23 orders</small>
+                            <div class="fw-bold" th:text="${topUser.username}">Olivia Rodrigo</div>
+                            <small class="text-muted" th:if="${topUser.orders.size()>1}" th:text="${topUser.orders.size()}+' orders'"></small>
+                            <small class="text-muted" th:if="${topUser.orders.size()==1}" th:text="${topUser.orders.size()}+' order'"></small>
                         </div>
                     </div>
                     <div class="text-end">
-                        <div class="fw-bold">$1,250</div>
+                        <div class="fw-bold" th:text="'$'+${totalSpentMoneyUser}">$1,250</div>
                         <small class="text-success">Loyal Customer</small>
                     </div>
                 </li>
@@ -168,17 +151,23 @@
         </div>
     </div>
 </div>
-
-<script>
-    // Sales Chart
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var chartLabels = /*[[${chartInfoLabels}]]*/ [];
+    var chartData = /*[[${chartInfoValues}]]*/ [];
+    console.log(chartLabels);
+    console.log(chartData);
+    /*]]>*/
+    console.log(chartLabels);
+    console.log(chartData);
     const ctx = document.getElementById('salesChart').getContext('2d');
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            labels: chartLabels,
             datasets: [{
-                label: 'Sales',
-                data: [1200, 1900, 1500, 2100, 1800, 2500, 2200],
+                label: 'Orders',
+                data: chartData,
                 borderColor: '#8c52ff',
                 tension: 0.4,
                 fill: true,
