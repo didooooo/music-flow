@@ -1,7 +1,6 @@
 package app.user.model;
 
 import app.address.model.Address;
-import app.notification.model.Notification;
 import app.order.model.Order;
 import app.record.model.Record;
 import app.review.model.Review;
@@ -58,8 +57,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-    @OneToMany
-    private List<Notification> notifications;
+//    @OneToMany
+//    private List<Notification> notifications;
     @OneToOne
     private ShoppingCart shoppingCart;
     @CreationTimestamp

@@ -1,0 +1,8 @@
+<div th:fragment="admin-action" class="admin-actions">
+    <a href="/admin/notifications" class="btn " th:classappend="${page=='notifications' ? 'btn-outline-success' : 'btn-outline-secondary'}">
+        <i class="fas fa-bell"></i>
+    </a>
+    <a href="/logout" class="btn btn-outline-secondary">
+        <i class="fas fa-sign-out-alt"></i>
+    </a>
+</div>

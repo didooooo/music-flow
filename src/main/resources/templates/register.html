@@ -37,10 +37,10 @@
                            autocomplete="off"
                            required="required"
                            name="user_username"
-
+                           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid' : ''"
                     />
-                    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="invalid-feedback">
-                        Username must be at least 3 characters long and contain only letters and numbers.
+                    <div th:if="${#fields.hasErrors('username')}"  class="invalid-feedback">
+                       <span th:errors="*{username}"></span>
                     </div>
                 </div>
 
@@ -52,6 +52,7 @@
                            autocomplete="off"
                            required="required"
                            name="user_email"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
                     />
                     <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="invalid-feedback">
                         Please enter a valid email address.
@@ -67,13 +68,14 @@
                                autocomplete="off"
                                required="required"
                                name="user_password"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
                         />
                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                             <i class="fa fa-eye"></i>
                         </button>
-                    </div>
-                    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="invalid-feedback">
-                        Password must be at least 8 characters long and include uppercase, lowercase, and numbers.
+                        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="invalid-feedback">
+                            Password must be at least 8 characters long and include uppercase, lowercase, and numbers.
+                        </div>
                     </div>
                 </div>
 
@@ -122,25 +124,44 @@
                 <div class="form-section">
                     <div class="form-group">
                         <label class="form-label">Street Address</label>
-                        <input th:field="*{street}" type="text" class="form-control" required>
+                        <input th:field="*{street}" type="text"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('street')} ? 'is-invalid' : ''"
+                               required>
+                        <div th:if="${#fields.hasErrors('street')}" th:errors="*{street}" class="invalid-feedback">
+                            Please enter a valid 10-digit phone number.
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label class="form-label">City</label>
-                                <input th:field="*{city}" type="text" class="form-control" >
+                                <input th:field="*{city}" type="text"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('city')} ? 'is-invalid' : ''"
+                               />
+                            </div>
+                            <div th:if="${#fields.hasErrors('city')}" th:errors="*{city}">
+                                Please enter a valid 10-digit phone number.
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="form-label">State</label>
-                                <input  th:field="*{state}" type="text" class="form-control">
+                                <input  th:field="*{state}" type="text"
+                                        class="form-control">
                             </div>
                         </div>
                         <div class="col-md-2">
                             <div class="form-group">
                                 <label class="form-label">ZIP</label>
-                                <input th:field="*{zip}" type="text" class="form-control">
+                                <input th:field="*{zip}" type="text"
+                                       th:classappend="${#fields.hasErrors('zip')} ? 'is-invalid' : ''"
+                                       class="form-control"
+                                />
+                            </div>
+                            <div th:if="${#fields.hasErrors('zip')}" th:errors="*{zip}">
+                                Please enter a valid 10-digit phone number.
                             </div>
                         </div>
                     </div>
@@ -153,6 +174,7 @@
                            placeholder="Enter your phone number..."
                            name="user_contact"
                            th:field="*{phone}"
+                           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''"
                     />
                     <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="invalid-feedback">
                         Please enter a valid 10-digit phone number.

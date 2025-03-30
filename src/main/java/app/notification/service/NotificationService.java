@@ -1,33 +1,92 @@
 package app.notification.service;
 
-import app.notification.model.MessageType;
-import app.notification.model.Notification;
-import app.notification.repository.NotificationRepository;
+import app.notification.client.NotificationFeignClient;
+import app.notification.dto.MessageType;
+import app.notification.dto.Notification;
 import app.user.model.User;
-import app.web.dto.SendEmailRequest;
+import app.notification.dto.SendEmailRequest;
+import app.user.service.UserService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+@Slf4j
 @Service
 public class NotificationService {
-    private final NotificationRepository notificationRepository;
+    private final NotificationFeignClient notificationFeignClient;
+    private final String EMAIL = "musicflowsuport@gmail.com";
 
-    public NotificationService(NotificationRepository notificationRepository) {
-        this.notificationRepository = notificationRepository;
+    public NotificationService(NotificationFeignClient notificationFeignClient) {
+        this.notificationFeignClient = notificationFeignClient;
     }
 
-    public Notification createNotificationFromUserToAdmin(User user, SendEmailRequest sendEmailRequest) {
-        Notification notification = Notification.builder()
-                .forAdmin(true)
-                .user(user)
-                .isDeleted(false)
-                .description(sendEmailRequest.getBody())
-                .messageType(MessageType.SUPPORT)
-                .isRead(false)
-                .senderEmail(sendEmailRequest.getFrom())
-                .receiver("our-email")
-                .subject(sendEmailRequest.getSubject())
-                .senderUsername(sendEmailRequest.getSenderUsername())
-                .build();
-        return notificationRepository.save(notification);
+    public void createNotificationFromUserToAdmin(User user, SendEmailRequest sendEmailRequest) {
+        sendEmailRequest.setReceiver(EMAIL);
+        sendEmailRequest.setForAdmin(true);
+        sendEmailRequest.setUserId(user.getId());
+        sendEmailRequest.setMessageType(MessageType.SUPPORT);
+        ResponseEntity<Void> responseEntity = notificationFeignClient.sendNotification(sendEmailRequest);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification sent successfully");
+            return;
+        }
+        log.info("Notification sent failed");
+    }
+
+    public void createNotificationFromAdminToUser(SendEmailRequest emailRequest) {
+        emailRequest.setForAdmin(false);
+        emailRequest.setSenderEmail(EMAIL);
+        ResponseEntity<Void> responseEntity = notificationFeignClient.sendEmail(emailRequest);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification sent successfully");
+            return;
+        }
+        log.info("Notification sent failed");
+
+    }
+
+    public List<Notification> getAll() {
+        ResponseEntity<List<Notification>> allNotifications = notificationFeignClient.getAllNotifications();
+        if (allNotifications.getStatusCode().is2xxSuccessful()) {
+            return allNotifications.getBody();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Notification> getAllRead(boolean read) {
+        ResponseEntity<List<Notification>> allNotifications;
+        if (read) {
+            allNotifications = notificationFeignClient.getReadNotifications();
+        } else {
+            allNotifications = notificationFeignClient.getUnreadNotifications();
+        }
+        if (allNotifications.getStatusCode().is2xxSuccessful()) {
+            return allNotifications.getBody();
+        }
+        return new ArrayList<>();
+    }
+
+    public void deleteNotificationById(UUID id) {
+        ResponseEntity<Void> responseEntity = notificationFeignClient.deleteNotification(id);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification deleted successfully");
+            return;
+        }
+        log.info("Notification deletion failed");
+
+    }
+
+    public void updateNotification(UUID id) {
+        ResponseEntity<Void> responseEntity = notificationFeignClient.updateNotification(id);
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            log.info("Notification updated successfully");
+            return;
+        }
+        log.info("Notification update failed");
+
     }
 }

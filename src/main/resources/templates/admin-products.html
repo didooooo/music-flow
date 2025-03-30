@@ -33,14 +33,7 @@
     <!-- Header -->
     <div class="admin-header">
         <h1 class="admin-title">Record Management</h1>
-        <div class="admin-actions">
-            <button class="btn btn-outline-secondary">
-                <i class="fas fa-bell"></i>
-            </button>
-            <a href="/logout" class="btn btn-outline-secondary">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
+        <th:block th:insert="fragments/actions :: admin-action"></th:block>
     </div>
 
     <!-- Action Bar -->

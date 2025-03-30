@@ -1,9 +1,10 @@
 package app.web;
 
+import app.notification.service.NotificationService;
 import app.security.AuthUser;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.SendEmailRequest;
+import app.notification.dto.SendEmailRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,9 +16,11 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/contact")
 public class ContactController {
     private final UserService userService;
+    private final NotificationService notificationService;
 
-    public ContactController(UserService userService) {
+    public ContactController(UserService userService, NotificationService notificationService) {
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -28,7 +31,7 @@ public class ContactController {
         mav.addObject("contactRequest",
                 SendEmailRequest.builder()
                         .senderUsername(user.getUsername())
-                        .from(user.getEmail()).build());
+                        .senderEmail(user.getEmail()).build());
         return mav;
     }
 
@@ -37,7 +40,7 @@ public class ContactController {
                                            SendEmailRequest sendEmailRequest) {
         ModelAndView mav = new ModelAndView();
         User user = userService.getById(authUser.getUserId());
-        userService.createNotificationFromGivenUser(user,sendEmailRequest);
+        notificationService.createNotificationFromUserToAdmin(user,sendEmailRequest);
         mav.setViewName("redirect:/contact");
         return mav;
     }
