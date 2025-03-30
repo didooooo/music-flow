@@ -1,7 +1,8 @@
-package app.web.dto;
+package app.notification.dto;
 
-import app.notification.model.MessageType;
 import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -9,12 +10,12 @@ import lombok.*;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 public class SendEmailRequest {
-    private String from;
-    private String to;
+    private String senderEmail;
+    private String receiver;
     private String senderUsername;
     private String subject;
-    private String body;
+    private String description;
     private boolean forAdmin;
+    private UUID userId;
     private MessageType messageType;
-    private String attachmentUrl;
 }

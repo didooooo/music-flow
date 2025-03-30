@@ -2,6 +2,8 @@ package app.web;
 
 import app.artist.model.Artist;
 import app.artist.service.ArtistService;
+import app.notification.dto.SendEmailRequest;
+import app.notification.service.NotificationService;
 import app.order.model.Order;
 import app.order.service.OrderService;
 import app.record.model.Record;
@@ -20,15 +22,15 @@ import org.springframework.data.util.Pair;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin")
@@ -39,13 +41,15 @@ public class AdminController {
     private final RecordService recordService;
     private final ArtistService artistService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
-    public AdminController(OrderService orderService, StatisticService statisticService, RecordService recordService, ArtistService artistService, UserService userService) {
+    public AdminController(OrderService orderService, StatisticService statisticService, RecordService recordService, ArtistService artistService, UserService userService, NotificationService notificationService) {
         this.orderService = orderService;
         this.statisticService = statisticService;
         this.recordService = recordService;
         this.artistService = artistService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/dashboard")
@@ -148,10 +152,10 @@ public class AdminController {
         modelAndView.addObject("totalSoldQuantity", totalSoldQuantityAndTotalMoneySpent.getSecond());
         modelAndView.addObject("totalMoneySpent", totalSoldQuantityAndTotalMoneySpent.getFirst());
         modelAndView.addObject("page", "reports");
-        if(period.equals("week")) {
+        if (period.equals("week")) {
             modelAndView.addObject("chartInfoLabels", new ArrayList<>(chartInfo.keySet()).reversed());
             modelAndView.addObject("chartInfoValues", new ArrayList<>(chartInfo.values()).reversed());
-        }else{
+        } else {
             modelAndView.addObject("chartInfoLabels", new ArrayList<>(chartInfo.keySet()));
             modelAndView.addObject("chartInfoValues", new ArrayList<>(chartInfo.values()));
         }
@@ -160,9 +164,29 @@ public class AdminController {
     }
 
     @GetMapping("/email")
-    public ModelAndView getEmailPage() {
+    public ModelAndView getEmailPage(@RequestParam(name = "userEmail",required = false) String email) {
         ModelAndView modelAndView = new ModelAndView();
+        List<User> users = userService.getAllUsers();
         modelAndView.setViewName("admin-send-email");
+        modelAndView.addObject("page", "email");
+        modelAndView.addObject("users", users);
+        modelAndView.addObject("sendEmailRequest", SendEmailRequest.builder().receiver(email).build());
+        return modelAndView;
+    }
+    @PostMapping("/email")
+    public ModelAndView sendEmail(SendEmailRequest emailRequest) {
+        ModelAndView modelAndView = new ModelAndView();
+        User user = userService.getUserByEmail(emailRequest.getReceiver());
+        emailRequest.setUserId(user.getId());
+        emailRequest.setSenderUsername(user.getUsername());
+        notificationService.createNotificationFromAdminToUser(emailRequest);
+        modelAndView.setViewName("redirect:/admin/email");
+        return modelAndView;
+    }
+    @GetMapping("/notifications")
+    public ModelAndView getNotificationsPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/notifications");
         return modelAndView;
     }
 

@@ -68,13 +68,10 @@ public class IndexController {
 
     @PostMapping("/register")
     public ModelAndView registerNewUser(@Valid RegisterRequest registerRequest, BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return new ModelAndView("register");
         }
-
         userService.registerUser(registerRequest);
-
         return new ModelAndView("redirect:/login");
     }
 

@@ -27,6 +27,7 @@
                     </div>
 
                     <div class="login-form">
+                        <p th:text="${errorMessage}"></p>
                         <form th:action="@{/login}" th:method="POST" th:object="${loginRequest}">
                             <!-- Username field -->
                             <div class="form-group">

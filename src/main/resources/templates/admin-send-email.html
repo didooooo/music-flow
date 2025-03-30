@@ -20,7 +20,7 @@
 <!-- Sidebar -->
 <div class="admin-sidebar">
     <div class="sidebar-header">
-        <h4>Music FLow Admin</h4>
+        <h4>Music Flow Admin</h4>
     </div>
 
     <th:block th:insert="fragments/menu :: admin-menu"></th:block>
@@ -32,14 +32,7 @@
     <!-- Header -->
     <div class="admin-header">
         <h1 class="admin-title">Dashboard</h1>
-        <div class="admin-actions">
-            <button class="btn btn-outline-secondary">
-                <i class="fas fa-bell"></i>
-            </button>
-            <button class="btn btn-outline-secondary">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
+        <th:block th:insert="fragments/actions :: admin-action"></th:block>
     </div>
 
 
@@ -48,22 +41,21 @@
             <div class="bank-icon-wrapper">
                 <i class="fas fa-envelope fa-3x gradient-text"></i>
             </div>
-            <h3 class="mt-3">Send Message to User</h3>
-            <p class="text-muted">Communicate directly with your users</p>
+            <h3 class="mt-3">Send Email to User</h3>
         </div>
 
-        <form id="messageForm">
+        <form id="messageForm" th:object="${sendEmailRequest}" th:action="@{/admin/email}" th:method="POST">
             <!-- User Selection -->
             <div class="form-group mb-4">
                 <label class="form-label">Select User</label>
                 <div class="user-select">
                     <i class="fas fa-user"></i>
-                    <select class="form-control form-control-lg">
-                        <option value="">Choose a user...</option>
-                        <option value="1">John Doe (john@example.com)</option>
-                        <option value="2">Jane Smith (jane@example.com)</option>
-                        <option value="3">Mike Johnson (mike@example.com)</option>
-                    </select>
+                    <input list="option" id="input" th:field="*{receiver}" class="form-control form-control-lg">
+                    <datalist id="option">
+                        <option th:each="user : ${users}"
+                                th:value="${user.email}"
+                                th:text="${user.username}"></option>
+                    </datalist>
                 </div>
             </div>
 
@@ -71,61 +63,39 @@
             <div class="form-group mb-4">
                 <label class="form-label">Message Type</label>
                 <div class="message-type-selector">
-                    <div class="message-type active" onclick="selectMessageType(this, 'general')">
+                    <div class="message-type active"  th:classappend="${sendEmailRequest.messageType == 'GENERAL' ? 'active' : ''}"
+                         onclick="selectMessageType(this, 'GENERAL')">
                         <i class="fas fa-comment"></i>
                         <div>General</div>
                     </div>
-                    <div class="message-type" onclick="selectMessageType(this, 'order')">
+                    <div class="message-type" th:classappend="${sendEmailRequest.messageType == 'ORDER' ? 'active' : ''}"
+                         onclick="selectMessageType(this, 'ORDER')">
                         <i class="fas fa-shopping-cart"></i>
                         <div>Order Related</div>
                     </div>
-                    <div class="message-type" onclick="selectMessageType(this, 'support')">
+                    <div class="message-type"  th:classappend="${sendEmailRequest.messageType == 'SUPPORT' ? 'active' : ''}"
+                         onclick="selectMessageType(this, 'SUPPORT')">
                         <i class="fas fa-headset"></i>
                         <div>Support</div>
                     </div>
+                    <input type="hidden" th:field="*{messageType}" id="messageTypeInput">
                 </div>
             </div>
 
             <!-- Subject -->
             <div class="form-group mb-4">
                 <label class="form-label">Subject</label>
-                <input type="text" class="form-control" placeholder="Enter message subject">
+                <input th:field="*{subject}" type="text" class="form-control" placeholder="Enter message subject">
             </div>
 
             <!-- Message Content -->
             <div class="form-group mb-4">
                 <label class="form-label">Message</label>
                 <div class="message-editor">
-                        <textarea class="form-control border-0" rows="6"
+                        <textarea th:field="*{description}" class="form-control border-0" rows="6"
                                   placeholder="Type your message here..."></textarea>
                 </div>
             </div>
-
-            <!-- Attachments -->
-            <div class="form-group mb-4">
-                <label class="form-label">Attachments (Optional)</label>
-                <input type="file" class="form-control" multiple accept="image/*,.pdf,.doc,.docx">
-                <div class="attachment-preview mt-3">
-                    <!-- Preview will be added here dynamically -->
-                </div>
-            </div>
-
-            <!-- Send Options -->
-            <!-- <div class="form-group mb-4">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="sendCopy">
-                    <label class="form-check-label" for="sendCopy">
-                        Send me a copy
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="urgent">
-                    <label class="form-check-label" for="urgent">
-                        Mark as urgent
-                    </label>
-                </div>
-            </div> -->
-
             <!-- Submit Button -->
             <button type="submit" class="gradient-btn w-100">
                 <i class="fas fa-paper-plane me-2"></i>Send Message
@@ -141,13 +111,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function selectMessageType(element, type) {
-        // Remove active class from all message types
-        document.querySelectorAll('.message-type').forEach(el => {
-            el.classList.remove('active');
-        });
-        // Add active class to selected type
+        document.getElementById("messageTypeInput").value = type;
+        document.querySelectorAll('.message-type').forEach(el => el.classList.remove('active'));
         element.classList.add('active');
     }
+
 
     // Handle file input change
     document.querySelector('input[type="file"]').addEventListener('change', function (e) {
@@ -183,12 +151,6 @@
         });
     });
 
-    // Form submission
-    document.getElementById('messageForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        // Add your form submission logic here
-        alert('Message sent successfully!');
-    });
 </script>
 </body>
 

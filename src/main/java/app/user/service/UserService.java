@@ -2,7 +2,7 @@ package app.user.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
-import app.notification.model.Notification;
+import app.notification.dto.Notification;
 import app.notification.service.NotificationService;
 import app.order.model.Order;
 import app.record.model.Record;
@@ -18,7 +18,7 @@ import app.user.model.User;
 import app.user.repository.UserRepository;
 import app.web.dto.EditAccountRequest;
 import app.web.dto.RegisterRequest;
-import app.web.dto.SendEmailRequest;
+import app.notification.dto.SendEmailRequest;
 import app.web.dto.UserFilterRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
@@ -258,13 +258,6 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    @Transactional
-    public void createNotificationFromGivenUser(User user, SendEmailRequest sendEmailRequest) {
-       Notification notification = notificationService.createNotificationFromUserToAdmin(user,sendEmailRequest);
-       user.getNotifications().add(notification);
-       userRepository.save(user);
-    }
-
     public User getTopCustomer() {
         List<User> users = userRepository.findAll();
         User topCustomer = null;
@@ -291,5 +284,9 @@ public class UserService implements UserDetailsService {
             totalSpent=totalSpent.add(order.getTotalPrice());
         }
         return totalSpent;
+    }
+
+    public User getUserByEmail(String receiver) {
+        return userRepository.findByEmail(receiver).orElseThrow(()->new RuntimeException("User not found"));
     }
 }

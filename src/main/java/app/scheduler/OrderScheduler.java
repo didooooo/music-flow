@@ -33,7 +33,7 @@ public class OrderScheduler {
     public void makeOrderShipped() {
         List<Order> allOrders = orderService.getAllOrders();
         Shipment shipment = Shipment.builder()
-                .orders( new ArrayList<>())
+                .orders(new ArrayList<>())
                 .build();
         Shipment savedShipment = shipmentService.upsertShipment(shipment);
         Statistics statisticsForToday = statisticService.getStatisticsForToday();
@@ -51,6 +51,7 @@ public class OrderScheduler {
             }
         }
     }
+
     @Scheduled(cron = "0 0 0 * * *")
     public void makeOrderDelivered() {
         List<Order> allOrders = orderService.getAllOrders();

@@ -12,7 +12,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class RegisterRequest {
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 20,message = "Username must be between 3 and 20 characters")
     private String username;
     @NotBlank
     @Size(min = 3, max = 20)

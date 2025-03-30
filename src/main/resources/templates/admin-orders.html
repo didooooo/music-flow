@@ -30,14 +30,7 @@
 <div class="main-content">
     <div class="admin-header">
         <h1 class="admin-title">Orders Management</h1>
-        <div class="admin-actions">
-            <button class="btn btn-outline-secondary">
-                <i class="fas fa-bell"></i>
-            </button>
-            <a href="/logout" class="btn btn-outline-secondary">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
+        <th:block th:insert="fragments/actions :: admin-action"></th:block>
     </div>
 
     <!-- Order Stats -->
@@ -92,7 +85,8 @@
                         <option value="" th:text="ALL"></option>
                         <option th:each="status : ${T(app.order.model.OrderStatus).values()}"
                                 th:value="${status.name()}"
-                                th:text="${status.name()}">Pending</option>
+                                th:text="${status.name()}">Pending
+                        </option>
                     </select>
                 </div>
                 <div class="filter-item date-range">
@@ -153,11 +147,16 @@
                     </td>
                     <td th:text="'$'+${order.getTotalPrice()}">$39.98</td>
                     <td>
-                        <span th:if="${order.status.name() =='DELIVERED'}" class="badge bg-success text-dark" th:text="${order.status.name()}">Delivered</span>
-                        <span th:if="${order.status.name() =='PENDING'}" class="badge bg-warning text-dark" th:text="${order.status.name()}">Delivered</span>
-                        <span th:if="${order.status.name() =='CANCELLED'}" class="badge bg-danger text-dark" th:text="${order.status.name()}">Delivered</span>
-                        <span th:if="${order.status.name() =='SHIPPED'}" class="badge bg-info text-dark" th:text="${order.status.name()}">Delivered</span>
-                        <span th:if="${order.status.name() =='CONFIRMED'}" class="badge bg-primary text-dark" th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='DELIVERED'}" class="badge bg-success text-dark"
+                              th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='PENDING'}" class="badge bg-warning text-dark"
+                              th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='CANCELLED'}" class="badge bg-danger text-dark"
+                              th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='SHIPPED'}" class="badge bg-info text-dark"
+                              th:text="${order.status.name()}">Delivered</span>
+                        <span th:if="${order.status.name() =='CONFIRMED'}" class="badge bg-primary text-dark"
+                              th:text="${order.status.name()}">Delivered</span>
                     </td>
                     <td th:text="${#temporals.format(order.updatedAt, 'yyyy-MM-dd')}">2024-03-15</td>
                     <td>
@@ -184,7 +183,8 @@
                         <i class="fas fa-chevron-left"></i>
                     </a>
                 </li>
-                <li class="page-item"  th:classappend="${page == orders.number} ? 'active'" th:each="page : ${#numbers.sequence(0, orders.totalPages - 1)}">
+                <li class="page-item" th:classappend="${page == orders.number} ? 'active'"
+                    th:each="page : ${#numbers.sequence(0, orders.totalPages - 1)}">
                     <a class="page-link" th:href="@{/admin/orders(page=${page})}" th:text="${page + 1}"></a>
                 </li>
                 <li class="page-item" th:if="${orders.hasNext()}">
@@ -202,7 +202,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" th:text="'Order Details '+${order.id}">Order Details 550e8400-e29b-41d4-a716-446655440000</h5>
+                <h5 class="modal-title" th:text="'Order Details '+${order.id}">Order Details
+                    550e8400-e29b-41d4-a716-446655440000</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -210,9 +211,12 @@
                     <div class="order-info">
                         <div class="info-group">
                             <h6 class="info-title">Customer Information</h6>
-                            <p th:utext="'<strong>Name:</strong> '+${order.firstName}+' '+${order.lastName}"><strong>Name:</strong> John Doe</p>
-                            <p th:utext="'<strong>Email:</strong> '+${order.email}"><strong>Email:</strong> john@example.com</p>
-                            <p th:utext="'<strong>Phone:</strong> '+${order.phone}"><strong>Phone:</strong> +1 234 567 890</p>
+                            <p th:utext="'<strong>Name:</strong> '+${order.firstName}+' '+${order.lastName}"><strong>Name:</strong>
+                                John Doe</p>
+                            <p th:utext="'<strong>Email:</strong> '+${order.email}"><strong>Email:</strong>
+                                john@example.com</p>
+                            <p th:utext="'<strong>Phone:</strong> '+${order.phone}"><strong>Phone:</strong> +1 234 567
+                                890</p>
                         </div>
                         <div class="info-group">
                             <h6 class="info-title">Shipping Address</h6>
@@ -221,7 +225,8 @@
                         </div>
                         <div class="info-group">
                             <h6 class="info-title">Order Summary</h6>
-                            <p th:utext="'<strong>Order Date:</strong> '+${#temporals.format(order.createdAt,'MMM d,YYYY')}"> March 20, 2024</p>
+                            <p th:utext="'<strong>Order Date:</strong> '+${#temporals.format(order.createdAt,'MMM d,YYYY')}">
+                                March 20, 2024</p>
                             <p><strong>Payment Method:</strong></p>
                             <p th:if="${order.payment==null}">You must make a payment to complete this order.</p>
                             <p th:if="${order.payment!=null and order.payment.getCreditCard()!=null}"
@@ -252,7 +257,9 @@
                                     <span th:text="'$'+${orderInfo.record.price}+' each'">$19.99 each</span>
                                 </div>
                             </div>
-                            <div class="product-price" th:text="'$'+${orderInfo.record.price*orderInfo.quantity}">$39.98</div>
+                            <div class="product-price" th:text="'$'+${orderInfo.record.price*orderInfo.quantity}">
+                                $39.98
+                            </div>
                         </div>
                     </div>
 
@@ -276,7 +283,7 @@
                                         <td class="text-end">
                                             <strong>
                                             <span class="total-value" th:if="${order.getTotalPrice()}>=100"
-                                           th:text="'$'+${order.getTotalPrice()}">$48.58</span>
+                                                  th:text="'$'+${order.getTotalPrice()}">$48.58</span>
                                                 <span class="total-value" th:if="${order.getTotalPrice()}<100"
                                                       th:text="'$'+${order.getTotalPrice()+2.59}">$48.58</span>
                                             </strong>
