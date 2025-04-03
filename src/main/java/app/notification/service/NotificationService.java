@@ -1,5 +1,6 @@
 package app.notification.service;
 
+import app.exception.NotificationUpdateFailedException;
 import app.notification.client.NotificationFeignClient;
 import app.notification.dto.MessageType;
 import app.notification.dto.Notification;
@@ -76,8 +77,7 @@ public class NotificationService {
             log.info("Notification deleted successfully");
             return;
         }
-        log.info("Notification deletion failed");
-
+        throw new NotificationUpdateFailedException("Notification delete failed");
     }
 
     public void updateNotification(UUID id) {
@@ -86,7 +86,7 @@ public class NotificationService {
             log.info("Notification updated successfully");
             return;
         }
-        log.info("Notification update failed");
+        throw new NotificationUpdateFailedException("Notification update failed");
 
     }
 }

@@ -8,7 +8,6 @@ public enum GenreRequest {
     JAZZ("JAZZ"),
     BLUES("BLUES"),
     CLASSICAL("CLASSICAL"),
-    HIP_HOP("HIP_HOP"),
     RAP("RAP"),
     RNB("RNB"),
     DISCO("DISCO"),

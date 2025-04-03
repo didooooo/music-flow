@@ -1,5 +1,6 @@
 package app.statistics.service;
 
+import app.exception.StatisticsForTodayDoesNotExist;
 import app.order.model.Order;
 import app.order.service.OrderService;
 import app.statistics.model.Statistics;
@@ -31,7 +32,7 @@ public class StatisticService {
     }
 
     public Statistics getStatisticsForToday() {
-        return statisticsRepository.findFirstByDate(LocalDate.now()).orElseThrow(() -> new RuntimeException("There is no statistic for today"));
+        return statisticsRepository.findFirstByDate(LocalDate.now()).orElseThrow(() -> new StatisticsForTodayDoesNotExist("There is no statistic for today"));
     }
 
     public List<Statistics> getAll() {

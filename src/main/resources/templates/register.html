@@ -28,6 +28,7 @@
     <h2 class="text-center">User Register</h2>
     <div class="row d-flex align-items-center justify-content-center mt-5">
         <div class="col-lg-12 col-xl-6">
+            <p th:text="${message}"></p>
             <form th:action="@{/register}" th:method="POST" enctype="multipart/form-data" class="needs-validation" th:object="${registerRequest}">
                 <!-- Username field -->
                 <div class="form-outline mb-4">

@@ -2,6 +2,8 @@ package app.user.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
+import app.exception.EmailAlreadyExistException;
+import app.exception.UsernameAlreadyExistException;
 import app.notification.dto.Notification;
 import app.notification.service.NotificationService;
 import app.order.model.Order;
@@ -64,11 +66,11 @@ public class UserService implements UserDetailsService {
     public User registerUser(RegisterRequest input) {
         Optional<User> userWithUsername = userRepository.findByUsername(input.getUsername());
         if (userWithUsername.isPresent()) {
-            throw new RuntimeException("Username is already in use");
+            throw new UsernameAlreadyExistException("Username is already in use");
         }
         Optional<User> userWithEmail = userRepository.findByEmail(input.getEmail());
         if (userWithEmail.isPresent()) {
-            throw new RuntimeException("Email is already in use");
+            throw new EmailAlreadyExistException("Email is already in use");
         }
         Address address = addressService.save(input.getStreet(), input.getCity(), input.getState(), input.getZip());
         User user = conversionService.convert(input, User.class)
@@ -85,12 +87,12 @@ public class UserService implements UserDetailsService {
     }
 
     public User getById(UUID userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("There is no such user with [%s] ".formatted(userId)));
+        return userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("There is no such user with [%s] ".formatted(userId)));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("There is no such user with [%s] ".formatted(username)));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Wrong credentials"));
         return new AuthUser(user.getId(), username, user.getPassword(), user.getRole(), user.isActive());
     }
 
@@ -287,6 +289,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User getUserByEmail(String receiver) {
-        return userRepository.findByEmail(receiver).orElseThrow(()->new RuntimeException("User not found"));
+        return userRepository.findByEmail(receiver).orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
+
 }

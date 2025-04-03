@@ -57,8 +57,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-//    @OneToMany
-//    private List<Notification> notifications;
     @OneToOne
     private ShoppingCart shoppingCart;
     @CreationTimestamp

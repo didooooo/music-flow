@@ -29,4 +29,5 @@ public class ArtistService {
                 .build();
         return artistRepository.save(artist);
     }
+
 }

@@ -2,6 +2,7 @@ package app.order.service;
 
 import app.address.model.Address;
 import app.address.service.AddressService;
+import app.exception.OrderDoesNotExistException;
 import app.order.model.Order;
 import app.order.model.OrderInfo;
 import app.order.model.OrderStatus;
@@ -151,7 +152,7 @@ public class OrderService {
     }
 
     public Order getById(UUID id) {
-        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        return orderRepository.findById(id).orElseThrow(() -> new OrderDoesNotExistException("Order not found"));
     }
 
     @Transactional
@@ -295,7 +296,7 @@ public class OrderService {
         return dateUtils;
     }
 
-    public List<DateUtils> getWeeksByISO(YearMonth month) {
+    private List<DateUtils> getWeeksByISO(YearMonth month) {
         List<DateUtils> dateUtils = new ArrayList<>();
         LocalDate start = month.atDay(1);
         LocalDate end = month.atEndOfMonth();
@@ -305,7 +306,7 @@ public class OrderService {
             if (weekEnd.isAfter(end)) weekEnd = end;
             String label;
             if (start.getDayOfMonth() == 1) {
-                label = "Begin: " + start.format(formatter) + " - " + weekEnd.format(formatter);
+                label = "Begin: - " + weekEnd.format(formatter);
             } else if (weekEnd.equals(end)) {
                 label = start.format(formatter) + " - End";
             } else {

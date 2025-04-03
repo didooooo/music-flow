@@ -34,8 +34,8 @@
             </ul>
 
             <!-- Search Form -->
-            <form class="search-form mx-auto d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search for music albums..."
+            <form th:action="@{'/records/filter'}" th:method="GET" class="search-form mx-auto d-flex">
+                <input class="form-control me-2" name="query" type="search" placeholder="Search for music albums..."
                        aria-label="Search">
                 <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
             </form>

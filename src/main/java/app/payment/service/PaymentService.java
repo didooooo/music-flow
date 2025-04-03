@@ -1,5 +1,6 @@
 package app.payment.service;
 
+import app.exception.PaymentMethodDeclinedException;
 import app.order.model.Order;
 import app.payment.model.BankTransfer;
 import app.payment.model.CreditCard;
@@ -40,6 +41,6 @@ public class PaymentService {
             Payment payment = Payment.builder().paypal(paypal).order(order).build();
             return paymentRepository.save(payment);
         }
-        throw new RuntimeException("Payment not created. Have to choose between these three methods");
+        throw new PaymentMethodDeclinedException("Payment not created. Have to choose between these three methods");
     }
 }

@@ -36,7 +36,6 @@ public class ShoppingCartController {
         ModelAndView mav = new ModelAndView();
         Record record = recordService.findById(id);
         userService.addRecordToCart(record, user.getUserId());
-//        mav.setViewName("redirect:/records/all?sort=");
         mav.setViewName("redirect:" + (referer != null ? referer : "/records/all?sort="));
         return mav;
     }

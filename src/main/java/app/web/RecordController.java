@@ -30,14 +30,12 @@ import java.util.UUID;
 @RequestMapping("/records")
 public class RecordController {
     private final RecordService recordService;
-    private final ConversionService conversionService;
     private final ArtistService artistService;
     private final ReviewService reviewService;
     private final UserService userService;
 
-    public RecordController(RecordService recordService, ConversionService conversionService, ArtistService artistService, ReviewService reviewService, UserService userService) {
+    public RecordController(RecordService recordService, ArtistService artistService, ReviewService reviewService, UserService userService) {
         this.recordService = recordService;
-        this.conversionService = conversionService;
         this.artistService = artistService;
         this.reviewService = reviewService;
         this.userService = userService;
@@ -52,7 +50,7 @@ public class RecordController {
         Page<Record> eightRecords = recordService.getRecordsWithGivenSize(PageRequest.of(page, 9),sort);
         List<Integer> ratingByGivenRecords = reviewService.getRatingByGivenRecords(eightRecords.getContent());
         User fromDB = userService.getById(user.getUserId());
-        modelAndView.addObject("resultName","ALl Albums");
+        modelAndView.addObject("resultName","All Albums");
         modelAndView.addObject("sort",sort);
         modelAndView.addObject("records", eightRecords);
         modelAndView.addObject("user", fromDB);
@@ -68,6 +66,7 @@ public class RecordController {
     @GetMapping("/filter")
     public ModelAndView getAll(@RequestParam(defaultValue = "0", name = "page") int page,
                                @AuthenticationPrincipal AuthUser user,
+                               @RequestParam(name = "query",required = false) String search,
                                @RequestParam(name = "sort", required = false) String sort,
                                @RequestParam(required = false, name = "format") List<String> format,
                                @RequestParam(required = false, name = "genre") List<String> genre,
@@ -85,17 +84,18 @@ public class RecordController {
         if(media == null){
             media = new ArrayList<>();
         }
-        if(media.isEmpty() && format.isEmpty() && genre.isEmpty()  && minPrice==null && maxPrice==null){
+        if(media.isEmpty() && format.isEmpty() && genre.isEmpty()  && minPrice==null && maxPrice==null && search==null){
             modelAndView.setViewName("redirect:/records/all?sort="+sort);
             return modelAndView;
         }
-        Page<Record> eightRecords = recordService.getEightRecordsWithFilterParameters(PageRequest.of(page, 9),sort,format,genre,media,maxPrice,minPrice);
+        Page<Record> eightRecords = recordService.getEightRecordsWithFilterParameters(PageRequest.of(page, 9),sort,format,genre,media,maxPrice,minPrice,search);
         List<Integer> ratingByGivenRecords = reviewService.getRatingByGivenRecords(eightRecords.getContent());
         User fromDB = userService.getById(user.getUserId());
         modelAndView.addObject("records", eightRecords);
         modelAndView.addObject("resultName","Result from Filter");
         modelAndView.addObject("sort",sort);
         modelAndView.addObject("user", fromDB);
+        modelAndView.addObject("query", search);
         modelAndView.addObject("selectedFormats", format);
         modelAndView.addObject("selectedGenres", genre);
         modelAndView.addObject("selectedTypes", media);
@@ -129,7 +129,9 @@ public class RecordController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public ModelAndView getSearchedRecordsByName(@RequestParam(value = "name", required = false) String name, @RequestParam(defaultValue = "0", name = "page") int page, @AuthenticationPrincipal AuthUser user) {
+    public ModelAndView getSearchedRecordsByName(@RequestParam(value = "name", required = false) String name,
+                                                 @RequestParam(defaultValue = "0", name = "page") int page,
+                                                 @AuthenticationPrincipal AuthUser user) {
         ModelAndView mav = new ModelAndView();
         Page<Record> records = recordService.getEightRecordsByName(PageRequest.of(page, 8), name);
         List<Artist> artists = artistService.findAll();
@@ -161,5 +163,4 @@ public class RecordController {
         mav.setViewName("redirect:/admin/records");
         return mav;
     }
-
 }

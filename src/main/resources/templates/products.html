@@ -24,6 +24,7 @@
     <!-- Secondary Navigation -->
     <th:block th:insert="fragments/menu :: secondary-menu"></th:block>
     <form th:action="@{'/records/filter'}" th:method="GET">
+        <input type="hidden" name="query" th:value="${query}" />
         <!-- Products Section -->
         <div class="row mx-0 mt-3" id="products">
             <!-- Filters Sidebar -->
@@ -161,7 +162,8 @@
                                         <div class="album-rating">
                                             <span th:if="${ratings.isEmpty() or ratings[stat.index]==0}">No reviews yet</span>
                                             <i th:if="${!ratings.isEmpty() and ratings[stat.index]!=0}"
-                                               th:each="star : ${#numbers.sequence(1, ratings[stat.index])}" class="fas fa-star"></i>
+                                               th:each="star : ${#numbers.sequence(1, ratings[stat.index])}"
+                                               class="fas fa-star"></i>
                                             <span th:text=" ${record.reviews}!=null ? '('+${record.reviews.size()+')'} : 0"
                                                   class="rating-count">(128)</span>
                                         </div>
@@ -205,18 +207,18 @@
                     <ul class="pagination justify-content-center">
                         <li class="page-item" th:if="${records.hasPrevious()}">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${records.number - 1},sort=${sort}, format=${selectedFormats}, media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
+                               th:href="@{/records/filter(page=${records.number - 1},query=${query},sort=${sort}, format=${selectedFormats}, media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
                                     class="fas fa-chevron-left"></i></a>
                         </li>
                         <li class="page-item" th:each="page : ${#numbers.sequence(0, records.totalPages - 1)}"
                             th:classappend="${page == records.number} ? 'active'">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${page} ,sort=${sort}, format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"
+                               th:href="@{/records/filter(page=${page} ,query=${query},sort=${sort}, format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"
                                th:text="${page + 1}"></a>
                         </li>
                         <li class="page-item" th:if="${records.hasNext()}">
                             <a class="page-link"
-                               th:href="@{/records/filter(page=${records.number + 1},sort=${sort} , format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
+                               th:href="@{/records/filter(page=${records.number + 1},query=${query},sort=${sort} , format=${selectedFormats} , media=${selectedTypes}, genre=${selectedGenres}, minPrice=${minPrice},maxPrice=${maxPrice})}"><i
                                     class="fas fa-chevron-right"></i></a>
                         </li>
                     </ul>
@@ -225,37 +227,7 @@
         </div>
     </form>
     <!-- Footer -->
-    <footer class="gradient text-light mt-5">
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>About Us</h5>
-                    <p>Your premier destination for quality music albums.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="#" class="text-light">Products</a></li>
-                        <li><a href="#" class="text-light">Contact</a></li>
-                        <li><a href="#" class="text-light">Terms & Conditions</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5>Connect With Us</h5>
-                    <div class="social-links">
-                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="mt-4">
-            <div class="text-center">
-                <p class="footer-quote mb-0">"Where Music Lives, Your Sound, Your Store"</p>
-                <small>&copy; 2024 SoundVibe Store. All rights reserved.</small>
-            </div>
-        </div>
-    </footer>
+    <th:block th:insert="fragments/footer :: footer"></th:block>
 </div>
 
 <!-- Scripts -->

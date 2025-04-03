@@ -2,6 +2,7 @@ package app.record.service;
 
 import app.artist.model.Artist;
 import app.artist.service.ArtistService;
+import app.exception.RecordNotFoundException;
 import app.order.model.Order;
 import app.order.model.OrderInfo;
 import app.order.service.OrderService;
@@ -14,6 +15,8 @@ import app.review.model.Review;
 import app.statistics.model.Statistics;
 import app.statistics.service.StatisticService;
 import app.web.dto.RecordUpsertRequest;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.transaction.Transactional;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+
+import jakarta.persistence.criteria.Predicate;
+
 import java.util.stream.Collectors;
 
 @Service
@@ -119,16 +125,16 @@ public class RecordService {
     }
 
     public Record findById(UUID id) {
-        return recordRepository.findById(id).orElseThrow(() -> new RuntimeException("Record not found"));
+        return recordRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("Record not found"));
     }
 
     public Page<Record> getEightRecordsByName(PageRequest of, String name) {
         return recordRepository.findAllByTitleContainingIgnoreCase(name, of);
     }
 
-    public Page<Record> getEightRecordsWithFilterParameters(PageRequest of, String sort, List<String> format, List<String> genre, List<String> type, BigDecimal maxPrice, BigDecimal minPrice) {
+    public Page<Record> getEightRecordsWithFilterParameters(PageRequest of, String sort, List<String> format, List<String> genre, List<String> type, BigDecimal maxPrice, BigDecimal minPrice, String search) {
         Specification<Record> spec = Specification.where(null);
-        spec = criteriaBuilder(format, genre, type, maxPrice, minPrice, spec);
+        spec = criteriaBuilder(format, genre, type, maxPrice, minPrice, spec, search);
         if (sort == null) {
             return recordRepository.findAll(spec, of);
         } else if (sort.equals("name")) {
@@ -145,13 +151,10 @@ public class RecordService {
         return recordRepository.findAll(spec, of);
     }
 
-    private Specification<Record> criteriaBuilder(List<String> format, List<String> genre, List<String> type, BigDecimal maxPrice, BigDecimal minPrice, Specification<Record> spec) {
+    private Specification<Record> criteriaBuilder(List<String> format, List<String> genre, List<String> type, BigDecimal maxPrice, BigDecimal minPrice, Specification<Record> spec, String search) {
         if (!genre.isEmpty()) {
             List<Genre> genres = genre.stream().map(Genre::getByCode).collect(Collectors.toList());
-            spec = spec.and((root, query, criteriaBuilder) -> {
-                criteriaBuilder.in(root.get("genre")).value(genres);
-                return criteriaBuilder.conjunction();
-            });
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.in(root.get("genre")).value(genres));
         }
         if (!type.isEmpty()) {
             List<Type> types = type.stream().map(Type::getByCode).collect(Collectors.toList());
@@ -167,6 +170,17 @@ public class RecordService {
 
         if (maxPrice != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice));
+        }
+        if (search != null && !search.isBlank()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                String searchPattern = "%" + search.toLowerCase() + "%";
+                List<Predicate> predicates = new ArrayList<>();
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), searchPattern));
+                Join<Record, Artist> artistJoin = root.join("artists", JoinType.LEFT);
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(artistJoin.get("name")), searchPattern));
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("genre").as(String.class)), searchPattern));
+                return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+            });
         }
         return spec;
     }

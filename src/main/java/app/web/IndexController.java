@@ -27,14 +27,10 @@ import java.util.List;
 @Controller
 public class IndexController {
     private final UserService userService;
-    private final StatisticService statisticService;
-    private final OrderService orderService;
     private final RecordService recordService;
 
-    public IndexController(UserService userService, StatisticService statisticService, OrderService orderService, RecordService recordService) {
+    public IndexController(UserService userService, RecordService recordService) {
         this.userService = userService;
-        this.statisticService = statisticService;
-        this.orderService = orderService;
         this.recordService = recordService;
     }
 
