@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
           content="SoundVibe Store - Your premier destination for quality music albums">
-    <title>SoundVibe Store - Feel the Beat, Own the Music</title>
-    <link rel="shortcut icon" href="../images/soundVibe3.png" type="image/x-icon">
+    <title>MusicFlow Store - Feel the Beat, Own the Music</title>
+    <link rel="shortcut icon" href="/images/logo.png" type="image/x-icon">
+
     <script src="https://ucarecdn.com/libs/widget/3.12.0/uploadcare.full.min.js"></script>
 
     <!-- CSS links -->
@@ -33,7 +34,7 @@
                 </div>
                 <div class="profile-content text-center">
                     <div class="profile-image-container">
-                        <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://icons.veryicon.com/png/o/miscellaneous/user-avatar/user-avatar-male-5.png' : user.profilePicture}"
+                        <img th:src="${#strings.isEmpty(user.profilePicture) ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRISxBTQ88B9PvlreCwRY0_wqZK7y4XoG4zIQ&s' : user.profilePicture}"
                              alt="User profile image" class="profile-image">
                     </div>
                     <div class="profile-info mt-3">
@@ -189,11 +190,11 @@
                         <div class="col-md-6">
                             <label for="firstName" class="form-label">First Name</label>
                             <input th:field="*{firstName}" type="text" class="form-control" id="firstName"
-                                   value="Olivia" required>
+                                   value="Olivia" >
                         </div>
                         <div class="col-md-6">
                             <label for="lastName" class="form-label">Last Name</label>
-                            <input th:field="*{lastName}" type="text" class="form-control" id="lastName" required>
+                            <input th:field="*{lastName}" type="text" class="form-control" id="lastName" >
                         </div>
                     </div>
                     <div class="mb-3">
@@ -220,7 +221,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label class="form-label">State</label>
-                                    <input th:field="*{state}" type="text" class="form-control" required>
+                                    <input th:field="*{state}" type="text" class="form-control" >
                                 </div>
                             </div>
                             <div class="col-md-2">

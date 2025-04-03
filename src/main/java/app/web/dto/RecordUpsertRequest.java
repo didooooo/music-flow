@@ -21,30 +21,18 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class RecordUpsertRequest {
     private UUID id;
-    @NotBlank
     private String title;
     private List<Artist> artists;
     private String artistsInput;
-    @NotBlank
     private String duration;
-    @NotBlank
     private String description;
-    @NotBlank
     private String recordCover;
-    @NotBlank
     private String spotifyUrl;
-    @NotBlank
     private String totalTracks;
-    @NotBlank
     private int quantity;
-    @NotBlank
     private BigDecimal price;
-    @NotNull
     private FormatRequest format;
-    @NotNull
     private TypeRequest type;
-    @NotNull
     private GenreRequest genre;
-    @NotNull
     private LocalDate releaseDate;
 }
